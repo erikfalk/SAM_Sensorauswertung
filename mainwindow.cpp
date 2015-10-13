@@ -33,8 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
-    ui->treeView->setRootIndex("../SAM_Sensorauswertung/czml");
-    //ui->treeView->setRootIndex(filemodel->setRootPath(QDir::rootPath()));
+    ui->treeView->setRootIndex(filemodel->setRootPath(QDir::rootPath()));
     ui->treeView->setAutoScroll(true);
 
 }

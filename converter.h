@@ -9,7 +9,10 @@
 #include <QTextStream>
 
 struct SensorData {
-    float lat, lon;
+    int hour, minute, second, day, month, year;
+    char orientation_lat; //N or S
+    char orientation_lon; //E or W
+    double lat, lon, sog, cog; //latitude, longitude, speed and course over ground
 };
 
 //This function extract specific Data from a GPS rawdata csv file
