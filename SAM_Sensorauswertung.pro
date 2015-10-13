@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     converter.cpp \
     addfile.cpp \
-    filebrowser.cpp
+    filebrowser.cpp \
+    test.cpp
 
 
 HEADERS  += mainwindow.h \
