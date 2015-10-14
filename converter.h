@@ -13,6 +13,7 @@ struct SensorData {
     char orientation_lat; //N or S
     char orientation_lon; //E or W
     double lat, lon, sog, cog; //latitude, longitude, speed and course over ground
+    double height, sensor_value;
 };
 
 //This function extract specific Data from a GPS rawdata csv file

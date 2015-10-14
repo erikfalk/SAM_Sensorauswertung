@@ -25,12 +25,28 @@ int getSensorData(QString filename, QVector<SensorData>& data){
        //if(line.count() != 13)
            //schreibe in Fehlervector
 
-       //build lat and lon
-       QString lat = list[3].remove(0,2);
+       //claculate lat and lon
+       QString deg;
+       QString min;
 
-       //put the needed listitems to the datastruct
-       temp.lat = (list[3].toFloat())/100;
-       temp.lon = (list[5].toFloat())/100;
+       //build lat
+       //extract degrees
+       deg.append(list[3].at(0));
+       deg.append(list[3].at(1));
+       min = list[3].remove(0,2);
+       //calculate degrees
+       temp.lat = deg.toDouble() + ((min.toDouble())/60);
+
+       //build lon
+       //extract degrees
+       deg.clear();
+       deg.append(list[5].at(0));
+       deg.append(list[5].at(1));
+       deg.append(list[5].at(2));
+       min = list[5].remove(0,3);
+       //calculate degrees
+       temp.lon = deg.toDouble() + ((min.toDouble())/60);
+
        data.append(temp);
      }
 

@@ -20,13 +20,13 @@ public:
 
 private slots:
     void on_buttonBox_accepted();
-    void onSetHint(QString &hint);
+    void onSetHint(QString &hint, QString &filetype);
 
 signals:
     void FileSelected(const QString &path);
 
 private:
-    Ui::Filebrowser *ui;
+    Ui::Filebrowser  *ui;
     QFileSystemModel *filemodel;
 };
 

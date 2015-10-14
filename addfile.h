@@ -25,7 +25,7 @@ private slots:
     void on_buttonBox_accepted();
     
 signals:
-    void setHint(QString &hint);
+    void setHint(QString &hint, QString &filetype);
 
 
 private:

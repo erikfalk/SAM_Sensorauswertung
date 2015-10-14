@@ -19,6 +19,7 @@ AddFile::~AddFile()
     delete ui;
 }
 
+//filebrowser for csv file
 void AddFile::on_src_toolButton_pressed()
 {
 
@@ -28,16 +29,18 @@ void AddFile::on_src_toolButton_pressed()
     connect(&fb, SIGNAL(FileSelected(QString)),
             this, SLOT(onSrc_FileSelected(QString)));
 
-    connect(this, SIGNAL(setHint(QString&)),
-            &fb, SLOT(onSetHint(QString&)));
+    connect(this, SIGNAL(setHint(QString&, QString&)),
+            &fb, SLOT(onSetHint(QString&, QString&)));
 
     QString hint = "<h2><center>Please select a csv file.</center></h2>";
-    emit this->setHint(hint);
+    QString filetype = "*.csv";
+    emit this->setHint(hint, filetype);
 
     fb.exec();
 
 }
 
+//filebrowser for czml file
 void AddFile::on_dst_toolButton_pressed()
 {
     Filebrowser fb;
@@ -46,12 +49,13 @@ void AddFile::on_dst_toolButton_pressed()
     connect(&fb, SIGNAL(FileSelected(QString)),
             this, SLOT(onDst_FileSelected(QString)));
 
-    //signal and slot for destination hint
-    connect(this, SIGNAL(setHint(QString&)),
-            &fb, SLOT(onSetHint(QString&)));
+    //signal and slot for destination hint and filetype
+    connect(this, SIGNAL(setHint(QString&, QString&)),
+            &fb, SLOT(onSetHint(QString&, QString&)));
 
     QString hint = "<h2><center>Please select a czml file or folder to save the czml file.</center></h2>";
-    emit this->setHint(hint);
+    QString filetype = "*.czml";
+    emit this->setHint(hint, filetype);
 
     fb.exec();
 }
@@ -81,5 +85,9 @@ void AddFile::on_buttonBox_accepted()
     getSensorData(ui->source_TextEdit->toPlainText(), data);
 
     if(writeCzml(ui->destination_TextEdit->toPlainText(), data) == -1)
-        QMessageBox::warning(this, "Error", "Could not write czml File!\n Please check if selected file ist correct.");
+        QMessageBox::warning(this, "Error", "Could not write czml File!\n "
+                                            "Please check if selected file ist correct.");
+    else
+        QMessageBox::information(this, "Success", "Converting successful.");
 }
+

@@ -40,9 +40,18 @@ void Filebrowser::on_buttonBox_accepted()
     this->close();
 }
 
-void Filebrowser::onSetHint(QString &hint)
+void Filebrowser::onSetHint(QString &hint, QString &filepath)
 {
     ui->hint_label->setText(hint);
+    if(filepath.endsWith("csv")){
+        filemodel->setNameFilters(QStringList() << "*.csv");
+        filemodel->setNameFilterDisables(false);
+    }
+    else{
+        filemodel->setNameFilters(QStringList() << "*.czml");
+        filemodel->setNameFilterDisables(false);
+    }
+
 }
 
 
