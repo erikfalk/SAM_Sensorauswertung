@@ -31,7 +31,7 @@
   <property name="windowTitle">
    <string>Add File</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>12</x>
@@ -63,6 +63,9 @@
           <width>410</width>
           <height>29</height>
          </size>
+        </property>
+        <property name="plainText">
+         <string>/Users/erik-falk/Desktop/SAM_Testdaten.csv</string>
         </property>
        </widget>
       </item>
@@ -98,6 +101,9 @@
           <height>29</height>
          </size>
         </property>
+        <property name="plainText">
+         <string>/Users/erik-falk/Desktop/test123.czml</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -121,14 +127,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>buttonBox</zorder>
-  <zorder>source_TextEdit</zorder>
-  <zorder>destination_TextEdit</zorder>
-  <zorder>src_label</zorder>
-  <zorder>dest_label</zorder>
-  <zorder>src_toolButton</zorder>
-  <zorder>dst_toolButton</zorder>
-  <zorder>src_label</zorder>
  </widget>
  <resources/>
  <connections>
