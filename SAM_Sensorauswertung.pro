@@ -16,13 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     converter.cpp \
     addfile.cpp \
-    filebrowser.cpp
+    filebrowser.cpp \
+    gpschecksum.cpp
 
 
 HEADERS  += mainwindow.h \
             converter.h \
             addfile.h \
-            filebrowser.h
+            filebrowser.h \
+    gpschecksum.h
 
 
 FORMS    += mainwindow.ui \
