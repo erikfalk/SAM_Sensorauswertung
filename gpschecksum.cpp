@@ -1,28 +1,28 @@
 #include "gpschecksum.h"
 
-bool gpsChecksum(QString &dataset){
+bool gpsChecksum(QString &dataline){
 
-    QByteArray datasetBytes = dataset.toUtf8();
+    QByteArray datalineBytes = dataline.toUtf8();
     QString recieved_checksum;
     int calc_checksum = 0x00;
 
 
-    for(int i = 0; i < datasetBytes.length(); i++){
+    for(int i = 0; i < datalineBytes.length(); i++){
 
-            switch(datasetBytes[i]){
+            switch(datalineBytes[i]){
 
                 case '$': break;
 
                 case '*': {
                     //extract recieved checksum
-                    recieved_checksum.append(datasetBytes.at(i+1));
-                    recieved_checksum.append(datasetBytes.at(i+2));
-                    i = datasetBytes.length();
+                    recieved_checksum.append(datalineBytes.at(i+1));
+                    recieved_checksum.append(datalineBytes.at(i+2));
+                    i = datalineBytes.length();
                     break;
                 }
 
                 default: {
-                    calc_checksum ^= datasetBytes[i];
+                    calc_checksum ^= datalineBytes[i];
                 }
             }
     }

@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QDebug>
 #include <QTextStream>
+#include "gpschecksum.h"
 
 struct SensorData {
     int hour, minute, second, day, month, year;
@@ -17,7 +18,7 @@ struct SensorData {
 };
 
 //This function extract specific Data from a GPS rawdata csv file
-int getSensorData(QString filename, QVector<SensorData>& data);
+int getSensorData(QString filename, QVector<SensorData>& complete, QVector<SensorData>& incomplete);
 
 //This function creates a czml file
 int writeCzml (QString filename, QVector<SensorData>& data);

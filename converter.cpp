@@ -4,9 +4,10 @@
 SensorData convertString(QString &rawDataString){
 
     SensorData temp;
+    QStringList list;
 
     //split line into tokens and store in list
-    list = line.split(",");
+    list = rawDataString.split(",");
 
     //Fehlerkorrektur
 
@@ -66,11 +67,11 @@ SensorData convertString(QString &rawDataString){
 }
 
 //This function extract specific Data from a GPS rawdata csv file
-int getSensorData(QString filename, QVector<SensorData>& data){
+int getSensorData(QString filename, QVector<SensorData>& complete, QVector<SensorData>& incomplete){
 
     QFile rawDataFile(filename);
     QTextStream rawData(&rawDataFile);
-    QStringList list;
+
 
     //open file for reading
     if(!rawDataFile.open(QFile::ReadOnly | QFile::Text)){
@@ -82,9 +83,8 @@ int getSensorData(QString filename, QVector<SensorData>& data){
     while(!rawData.atEnd()){
 
        QString line = rawData.readLine();
-       //checksum
 
-       if(checksum){
+       if(gpsChecksum(line)){
            complete.append(convertString(line));
        } else{
            incomplete.append(convertString(line));
