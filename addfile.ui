@@ -65,7 +65,7 @@
          </size>
         </property>
         <property name="plainText">
-         <string>/Users/erik-falk/Desktop/SAM_Testdaten.csv</string>
+         <string>C:\Users\Rick\Documents\GitHub\SAM_Sensorauswertung\SAM_Testdaten.csv</string>
         </property>
        </widget>
       </item>
@@ -102,7 +102,7 @@
          </size>
         </property>
         <property name="plainText">
-         <string>/Users/erik-falk/Desktop/test123.czml</string>
+         <string>C:\Users\Rick\Documents\GitHub\SAM_Sensorauswertung\czml\SAM_Testdaten.czml</string>
         </property>
        </widget>
       </item>

@@ -3,7 +3,7 @@
 
 void findPeak(QVector<SensorData> &complete){
 
-    int maxSpeed = 20, i = 0;
+    int maxSpeed = 20, i = 0, time;
     double dx, dy, distance;
 
     for(i=0; i<complete.count();i++){
@@ -13,8 +13,19 @@ void findPeak(QVector<SensorData> &complete){
 
         distance = sqrt((dx*dx)+(dy*dy));
 
+        qDebug()<<distance;
 
-
+        if(complete[i+1].second < complete[i].second){
+            if(complete[i+1].minute < complete[i].minute){
+                time = (((60-complete[i].minute)+complete[i+1].minute)*60) + ((60-complete[i].second)+complete[i+1].second);
+            } else {
+                time = ((complete[i+1].minute - complete[i].minute)*60) + ((60-complete[i].second)+complete[i+1].second);
+            }
+        } else {
+            if(complete[i+1].minute < complete[i].minute){
+                time = (((60-complete[i].minute)+complete[i+1].minute)*60) + (complete[i+1].second - complete[i].second);
+            }
+        }
 
     }
 }

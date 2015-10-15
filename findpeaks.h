@@ -3,7 +3,7 @@
 
 #include "converter.h"
 
-void findPeak(SensorData& complete);
+void findPeak(QVector<SensorData>& complete);
 
 #endif // FINDPEAKS
 
