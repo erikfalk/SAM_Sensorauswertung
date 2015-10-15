@@ -6,18 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>656</width>
-    <height>325</height>
+    <width>910</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SAM Sensorauswertung</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QTreeView" name="treeView">
@@ -34,17 +37,15 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="QWebView" name="cesiumView">
-        <property name="url">
-         <url>
-          <string>about:blank</string>
-         </url>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      </widget>
+      <widget class="QWebView" name="cesiumView">
+       <property name="url">
+        <url>
+         <string>about:blank</string>
+        </url>
+       </property>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -53,8 +54,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>656</width>
-     <height>22</height>
+     <width>910</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
