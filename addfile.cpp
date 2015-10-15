@@ -80,7 +80,7 @@ void AddFile::onDst_FileSelected(const QString &path)
 
 void AddFile::on_buttonBox_accepted()
 {
-    QVector<SensorData> data;
+    QVector<SensorData> complete, incomplete;
     
     getSensorData(ui->source_TextEdit->toPlainText(), data);
 

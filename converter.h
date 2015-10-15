@@ -22,6 +22,10 @@ int getSensorData(QString filename, QVector<SensorData>& data);
 //This function creates a czml file
 int writeCzml (QString filename, QVector<SensorData>& data);
 
+//This function converte the data from the csv file into the struct
+SensorData convertString (QString &rawDataString);
+
+//This function checks the checksum of the gps signal
 
 #endif // CONVERTER
 
