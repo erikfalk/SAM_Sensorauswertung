@@ -24,7 +24,7 @@ void findPeak(QVector<SensorData> &complete){
         calcSpeed = (distance/tempTime)*3.6;
 
         if(maxSpeed <= calcSpeed){
-            complete.erase(complete[i]);
+            complete.remove(i);
         }
 
         /*
