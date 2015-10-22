@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     converter.cpp \
     addfile.cpp \
     filebrowser.cpp \
-    gpschecksum.cpp
+    gpschecksum.cpp \
+    findpeaks.cpp
 
 
 HEADERS  += mainwindow.h \
             converter.h \
             addfile.h \
             filebrowser.h \
-    gpschecksum.h
+    gpschecksum.h \
+    findpeaks.h
 
 
 FORMS    += mainwindow.ui \
