@@ -7,14 +7,17 @@
 #include <QVector>
 #include <QDebug>
 #include <QTextStream>
+#include <QDateTime>
+#include <QTime>
+#include <QDate>
+#include <QGeoCoordinate>
+
 #include "gpschecksum.h"
 
 struct SensorData {
-    int hour, minute, second, day, month, year;
-    char orientation_lat; //N or S
-    char orientation_lon; //E or W
-    double lat, lon, sog, cog; //latitude, longitude, speed and course over ground
-    double height, sensor_value;
+    QDateTime dateTime;
+    QGeoCoordinate position;
+    double sog, cog, height, sensor_value;
 };
 
 //This function extract specific Data from a GPS rawdata csv file

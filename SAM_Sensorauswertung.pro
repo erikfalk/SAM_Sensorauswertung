@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkitwidgets webenginewidgets
+QT       += core gui webkitwidgets webenginewidgets positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

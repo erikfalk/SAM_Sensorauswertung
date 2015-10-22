@@ -84,7 +84,7 @@ void AddFile::on_buttonBox_accepted()
     
     getSensorData(ui->source_TextEdit->toPlainText(), complete, incomplete);
 
-    if(writeCzml(ui->destination_TextEdit->toPlainText(), complete) == -1)
+    if(writeCzml(ui->destination_TextEdit->toPlainText(), incomplete) == -1)
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");
     else

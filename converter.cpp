@@ -1,5 +1,4 @@
 #include "converter.h"
-//
 
 SensorData convertString(QString &rawDataString){
 
@@ -23,8 +22,9 @@ SensorData convertString(QString &rawDataString){
     deg.append(list[3].at(0));
     deg.append(list[3].at(1));
     min = list[3].remove(0,2);
-    //calculate degrees
-    temp.lat = deg.toDouble() + ((min.toDouble())/60);
+    //calculate and set degrees
+    temp.position.setLatitude(deg.toDouble() + ((min.toDouble())/60));
+
 
     //build lon
     //extract degrees
@@ -34,17 +34,20 @@ SensorData convertString(QString &rawDataString){
     deg.append(list[5].at(2));
     min = list[5].remove(0,3);
     //calculate degrees
-    temp.lon = deg.toDouble() + ((min.toDouble())/60);
+    temp.position.setLongitude(deg.toDouble() + ((min.toDouble())/60));
 
     //extract time
-    temp.hour   = QString(QString(list[1].at(0)) + QString(list[1].at(1))).toInt();
-    temp.minute = QString(QString(list[1].at(2)) + QString(list[1].at(3))).toInt();
-    temp.second = QString(QString(list[1].at(4)) + QString(list[1].at(5))).toInt();
-
+    QTime time(QString(QString(list[1].at(0)) + QString(list[1].at(1))).toInt(),
+               QString(QString(list[1].at(2)) + QString(list[1].at(3))).toInt(),
+               QString(QString(list[1].at(4)) + QString(list[1].at(5))).toInt());
+    
     //extract date
-    temp.day   = QString(QString(list[9].at(0)) + QString(list[9].at(1))).toInt();
-    temp.month = QString(QString(list[9].at(2)) + QString(list[9].at(3))).toInt();
-    temp.year = QString(QString(list[9].at(4)) + QString(list[9].at(5))).toInt();
+    QDate date(QString(QString(list[9].at(4)) + QString(list[9].at(5))).toInt(),
+               QString(QString(list[9].at(2)) + QString(list[9].at(3))).toInt(),
+               QString(QString(list[9].at(0)) + QString(list[9].at(1))).toInt());
+    
+    temp.dateTime.setTime(time);
+    temp.dateTime.setDate(date);
 
     //extract speed and course over ground
     temp.sog = list[8].toDouble();
@@ -86,7 +89,7 @@ int getSensorData(QString filename, QVector<SensorData>& complete, QVector<Senso
 
        if(gpsChecksum(line)){
            complete.append(convertString(line));
-       } else{
+       }else{
            incomplete.append(convertString(line));
        }
      }
@@ -132,12 +135,8 @@ int writeCzml (QString filename, QVector<SensorData>& data){
 
      czmlData << "\"position\":{\n"
                  "\"epoch\": \"2015-09-22T12:00:00Z\",\n"
-                 "\"cartographicDegrees\":[" << data[i].lon << ", " << data[i].lat << ", 0]}}\n";
+                 "\"cartographicDegrees\":[" << data[i].position.longitude() << ", " << data[i].position.latitude() << ", 0]}}\n";
     }
-
-
-
-
 
     //end
     czmlData << "]";
