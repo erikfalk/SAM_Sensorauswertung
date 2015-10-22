@@ -85,10 +85,9 @@ void AddFile::on_buttonBox_accepted()
     
     getSensorData(ui->source_TextEdit->toPlainText(), complete, incomplete);
 
-<<<<<<< HEAD
-    if(writeCzml(ui->destination_TextEdit->toPlainText(), incomplete) == -1)
-=======
-    findPeak(incomplete);
+    if(writeCzml(ui->destination_TextEdit->toPlainText(), incomplete) == -1);
+
+    findPeak(complete, incomplete);
 
 
     //
