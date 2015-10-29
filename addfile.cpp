@@ -85,20 +85,12 @@ void AddFile::on_buttonBox_accepted()
     
     getSensorData(ui->source_TextEdit->toPlainText(), complete, incomplete);
 
-<<<<<<< HEAD
-    if(writeCzml(ui->destination_TextEdit->toPlainText(), incomplete) == -1)
-=======
-    findPeak(incomplete);
-
-
-    //
-    /*
     if(writeCzml(ui->destination_TextEdit->toPlainText(), complete) == -1)
->>>>>>> d4cf9304916256262595e5a779a582050db2b4e7
+
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");
     else
         QMessageBox::information(this, "Success", "Converting successful.");
-    */
+
 }
 
