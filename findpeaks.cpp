@@ -3,30 +3,39 @@
 
 void findPeak(QVector<SensorData> &complete){
 
-    int maxSpeed = 20, i = 0, time;
-    double dx, dy, distance, calcSpeed;
+    int maxSpeed = 20, i = 0;
+    long long int tempTime;
+    double distance, calcSpeed;
 
-    for(i=0; i<complete.count();i++){
+    for(i=0; i<10;i++){
 
-        dx = 71.5 * (complete[i].lon - complete[i+1].lon);
-        dy = 111.3 * (complete[i].lat - complete[i+1].lat);
 
-        distance = sqrt((dx*dx)+(dy*dy));
+        distance = complete[i].position.distanceTo(complete[i+1].position);
 
-        qDebug() << " Entfernung: " << distance;
-        qDebug() << " Stunde: " << complete[i].hour;
-        qDebug() << " Minute: " << complete[i].minute;
-        qDebug() << " Sekunde: " << complete[i].second;
+        qDebug() << "Entfernung: " << distance;
 
-        qDebug() << complete[i].time.secsTo(complete[i+1].time);
-        qDebug() << time2.secsTo(time1);
-            return 0;
+        qDebug() << "Zeit: " << complete[i].dateTime.time();
+        qDebug() << "Datum: " << complete[i].dateTime.date();
 
-        qDebug() << " Zeit: " << time;
+        tempTime = complete[i].dateTime.secsTo(complete[i+1].dateTime);
 
-        calcSpeed = ((distance*1000) / time)*3.6;
+        qDebug() << "Vergangene Zeit" << tempTime;
 
-        if()
+        calcSpeed = (distance/tempTime)*3.6;
+
+        if(maxSpeed <= calcSpeed){
+            complete.remove(i);
+        }
+
+        /*
+        if(calcSpeed <= maxSpeed){
+            qDebug() << "passt";
+            qDebug() << calcSpeed;
+        }else{
+            qDebug() << "falsch";
+            qDebug() << calcSpeed;
+        }
+        */
 
     }
 }
