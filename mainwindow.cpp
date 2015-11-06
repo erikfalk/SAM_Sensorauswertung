@@ -1,6 +1,8 @@
 #include <QtWidgets>
 #include <QtWebKitWidgets/QWebView>
+#include <QtWebEngineWidgets>
 #include <QWebEngineView>
+#include <QWebEngineSettings>
 #include <QDebug>
 #include <QUrl>
 
@@ -14,12 +16,37 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
+
+
+    /*
+    QWebEngineSettings *settings = ui->cesiumView->settings();
+
+    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
+    settings->setAttribute(QWebEngineSettings::SpatialNavigationEnabled, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
+    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+    settings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+    settings->setAttribute(QWebEngineSettings::ErrorPageEnabled, true);
+    settings->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+
+    ui->cesiumView->setAcceptDrops(true);
+    ui->cesiumView->setMouseTracking(true);
+    */
+
 
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
 
-    //sui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/cesium.html"));
+
+
+
+
+
+    //ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
+
+    //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/cesium.html"));
 
     //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/Cesium/Apps/CesiumViewer/index.html"));
 
@@ -28,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     filemodel->setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
     filemodel->setNameFilters(QStringList() << "*.czml");
     filemodel->setNameFilterDisables(true);
+
 
     ui->treeView->setModel(filemodel);
     ui->treeView->setColumnHidden(1,true);

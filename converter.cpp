@@ -1,17 +1,64 @@
 #include "converter.h"
 
-SensorData convertString(QString &rawDataString){
+Converter::~Converter()
+{
+
+}
+
+//This function extract specific Data from a GPS rawdata csv file
+int Converter::extractSensorData(QString filename){
+
+    QFile rawDataFile(filename);
+    QTextStream rawData(&rawDataFile);
+
+    //open file for reading
+    if(!rawDataFile.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "could not open file for reading";
+        return -1;
+    }
+
+    //add data to vector
+    while(!rawData.atEnd()){
+
+       QString line = rawData.readLine();
+
+       //check for complete dataset
+       if(gpsChecksum(line)){
+           _completeSensorData.append(convertString(line));
+       }else{
+           _incompleteSensorData.append(convertString(line));
+       }
+     }
+
+    rawDataFile.flush();
+    rawDataFile.close();
+
+    //find and remove peaks
+    findPeak(_incompleteSensorData);
+
+    return 0;
+}
+
+//returns a color, between red and green, corrosponding to the sensorvalue
+QColor Converter::mapValueToColor(double sensorValue){
+
+    //calculate hue
+    double hue = (_maxSensorValue-sensorValue)/((_maxSensorValue-_minSensorValue)*3);
+
+    //calculate corrosponding color
+    QColor color = QColor::fromHsvF(hue, 1.0, 1.0);
+
+    return color.toRgb();
+}
+
+//extract specific Data from a GPS rawdata csv file
+SensorData Converter::convertString(QString &rawDataString){
 
     SensorData temp;
     QStringList list;
 
     //split line into tokens and store in list
     list = rawDataString.split(",");
-
-    //Fehlerkorrektur
-
-    //if(line.count() != 13)
-        //schreibe in Fehlervector
 
     //claculate lat and lon
     QString deg;
@@ -40,12 +87,12 @@ SensorData convertString(QString &rawDataString){
     QTime time(QString(QString(list[1].at(0)) + QString(list[1].at(1))).toInt(),
                QString(QString(list[1].at(2)) + QString(list[1].at(3))).toInt(),
                QString(QString(list[1].at(4)) + QString(list[1].at(5))).toInt());
-    
+
     //extract date
-    QDate date(QString(QString(list[9].at(4)) + QString(list[9].at(5))).toInt(),
+    QDate date(2000 + QString(QString(list[9].at(4)) + QString(list[9].at(5))).toInt(),
                QString(QString(list[9].at(2)) + QString(list[9].at(3))).toInt(),
                QString(QString(list[9].at(0)) + QString(list[9].at(1))).toInt());
-    
+
     temp.dateTime.setTime(time);
     temp.dateTime.setDate(date);
 
@@ -56,54 +103,32 @@ SensorData convertString(QString &rawDataString){
     //check for and add extra data
     if(list.count() > 13){
         //extract height
-        bool *ok = NULL;
-        list[13].toDouble(ok);
-        if(ok)
          temp.height = list[13].toDouble();
 
         //extract sensor value
-        list[14].toDouble(ok);
-        if(ok)
-         temp.sensor_value = list[14].toDouble(ok);
+         temp.sensor_value = list[14].toDouble();
+
+        //extract minimum and maximum sensor value
+        if(temp.sensor_value > _maxSensorValue)
+            _maxSensorValue = temp.sensor_value;
+
+        if(temp.sensor_value < _minSensorValue)
+            _minSensorValue = temp.sensor_value;
+
+        //extract latest date and time
+        if(temp.dateTime > _latestDateTime)
+            _latestDateTime = temp.dateTime;
+
     }
     return temp;
 }
 
-//This function extract specific Data from a GPS rawdata csv file
-int getSensorData(QString filename, QVector<SensorData>& complete, QVector<SensorData>& incomplete){
 
-    QFile rawDataFile(filename);
-    QTextStream rawData(&rawDataFile);
-
-
-    //open file for reading
-    if(!rawDataFile.open(QFile::ReadOnly | QFile::Text)){
-        qDebug() << "could not open file for reading";
-        return -1;
-    }
-
-    //add a line to the stringlist
-    while(!rawData.atEnd()){
-
-       QString line = rawData.readLine();
-
-       if(gpsChecksum(line)){
-           complete.append(convertString(line));
-       }else{
-           incomplete.append(convertString(line));
-       }
-     }
-
-    rawDataFile.flush();
-    rawDataFile.close();
-
-    return 0;
-}
-
-//This function creates a czml file
-int writeCzml (QString filename, QVector<SensorData>& data){
+//creates a czml file
+int Converter::writeCzml (QString filename, const QVector<SensorData>& data){
 
     QFile czmlFile(filename);
+    
 
     //open file for writing
     if(!czmlFile.open(QFile::WriteOnly | QFile::Text)){
@@ -113,35 +138,136 @@ int writeCzml (QString filename, QVector<SensorData>& data){
 
     QTextStream czmlData(&czmlFile);
     //start
-    czmlData << "[{\"id\":\"document\", \"version\":\"1.0\"}\n";
+    czmlData << "[\r\n {\r\n  \"id\":\"document\", \r\n  \"version\":\"1.0\"\r\n }";
 
     //write points
     for(int i = 0; i < data.length(); i++){
 
-        czmlData << ",{\"id\": \"Point_Test_" << i << "\",\n"
-                    "\"availability\": \"2015-09-22T12:00:00Z/2015-09-22T13:00:00Z\",\n"
-                    "\"point\":{\n"
-                    "\"color\":{\n"
-                    "\"interval\":\"2015-09-22T12:00:00Z/2015-09-22T13:00:00Z\",\n"
-                    "\"rgba\":[255,0,0,255]\n"
-                    "},\n"
-                    "\"outlineColor\":{\n"
-                    "\"rgba\": [255,0,0,255]\n"
-                    "},\n"
-                    "\"outlineWidth\":5,\n"
-                    "\"pixelsize\": 200.0,\n"
-                    "\"show\": true\n"
-                    "},\n";
+        //get point color
+        QColor color = mapValueToColor(data[i].sensor_value);
+        qDebug() << data[i].dateTime.toString(Qt::ISODate);
 
-     czmlData << "\"position\":{\n"
-                 "\"epoch\": \"2015-09-22T12:00:00Z\",\n"
-                 "\"cartographicDegrees\":[" << data[i].position.longitude() << ", " << data[i].position.latitude() << ", 0]}}\n";
+        czmlData << ",\n{\n \"id\": \"Dataset " << i << "\",\n"
+                    " \"description\": \"Position: " << data[i].position.toString(QGeoCoordinate::DegreesWithHemisphere) << " \",\n"
+                    " \"availability\": \"" << data[i].dateTime.toString(Qt::ISODate) << "Z/"
+                                           << _latestDateTime.toString(Qt::ISODate) << "Z\",\n"
+                    " \"point\":{\n"
+                    "  \"color\":{\n"
+                    "   \"rgba\":[" << color.red() << "," << color.green() << "," << color.blue() << ",255]\n"
+                    " },\n";
+
+
+        czmlData << " \"outlineColor\":{\n"
+                    "  \"rgba\": [" << color.red() << "," << color.green() << "," << color.blue() << ",255]\n"
+                    " },\n"
+                    " \"outlineWidth\":5,\n"
+                    " \"pixelsize\": 200.0,\n"
+                    " \"show\": true\n"
+                    " },\n";
+
+        czmlData << " \"position\":{\n"
+                    "  \"cartographicDegrees\":[" << data[i].position.longitude() << ", "
+                                             << data[i].position.latitude() << ", 0]\n"
+                    " }\n"
+                    "}";
     }
 
     //end
     czmlData << "]";
+
     czmlFile.flush();
     czmlFile.close();
 
     return 0;
+}
+
+bool Converter::gpsChecksum(QString &dataline){
+
+    QByteArray datalineBytes = dataline.toUtf8();
+    QString recieved_checksum;
+    int calc_checksum = 0x00;
+
+
+    for(int i = 0; i < datalineBytes.length(); i++){
+
+            switch(datalineBytes[i]){
+
+                case '$': break;
+
+                case '*': {
+                    //extract recieved checksum
+                    recieved_checksum.append(datalineBytes.at(i+1));
+                    recieved_checksum.append(datalineBytes.at(i+2));
+                    i = datalineBytes.length();
+                    break;
+                }
+
+                default: {
+                    calc_checksum ^= datalineBytes[i];
+                }
+            }
+    }
+
+    bool ok;
+    if(calc_checksum == recieved_checksum.toInt(&ok,16))
+        return true;
+
+    return false;
+}
+
+//find and remove peaks
+void Converter::findPeak(QVector<SensorData> &data){
+
+    long long int tempTime;
+    double distance, calcSpeed;
+
+    for(int i=0; i< data.count()-1; i++){
+
+        distance = data[i].position.distanceTo(data[i+1].position);
+        tempTime = data[i].dateTime.secsTo(data[i+1].dateTime);
+
+        //speed in km/h
+        calcSpeed = (distance/tempTime)*3.6;
+
+        if(_maxVehicleSpeed <= calcSpeed){
+            data.remove(i);
+        }
+    }
+}
+
+//setter and getter
+void Converter::setCompleteSensorData(QVector<SensorData> complete){
+    _completeSensorData = complete;
+}
+
+void Converter::setIncompleteSensorData(QVector<SensorData> incomplete){
+    _incompleteSensorData = incomplete;
+}
+
+void Converter::setMaxSensorValue(double value){
+    _maxSensorValue = value;
+}
+
+void Converter::setMinSensorValue(double value){
+    _minSensorValue = value;
+}
+
+void Converter::setMaxVehicleSpeed(double speed){
+    _maxVehicleSpeed = speed;
+}
+
+const QVector<SensorData>& Converter::getCompleteSensorData(){
+    return _completeSensorData;
+}
+
+const QVector<SensorData>& Converter::getIncompleteSensorData(){
+    return _incompleteSensorData;
+}
+
+double Converter::getMaxSensorValue() const{
+    return _maxSensorValue;
+}
+
+double Converter::getMinSensorValue() const{
+    return _minSensorValue;
 }

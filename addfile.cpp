@@ -81,15 +81,11 @@ void AddFile::onDst_FileSelected(const QString &path)
 
 void AddFile::on_buttonBox_accepted()
 {
-    QVector<SensorData> complete, incomplete;
-    
-    getSensorData(ui->source_TextEdit->toPlainText(), complete, incomplete);
+    Converter myConverter;
 
+    myConverter.extractSensorData(ui->source_TextEdit->toPlainText());
 
-    findPeak(complete);
-
-
-    if(writeCzml(ui->destination_TextEdit->toPlainText(), complete) == -1){
+    if(myConverter.writeCzml(ui->destination_TextEdit->toPlainText(), myConverter.getIncompleteSensorData()) == -1){
 
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");

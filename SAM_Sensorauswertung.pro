@@ -12,21 +12,21 @@ TARGET = "SAM Sensorauswertung"
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    converter.cpp \
-    addfile.cpp \
-    filebrowser.cpp \
-    gpschecksum.cpp \
-    findpeaks.cpp
+SOURCES +=  main.cpp\
+            mainwindow.cpp \
+            converter.cpp \
+            addfile.cpp \
+            filebrowser.cpp
+            #gpschecksum.cpp \
+            #findpeaks.cpp
 
 
 HEADERS  += mainwindow.h \
             converter.h \
             addfile.h \
-            filebrowser.h \
-    gpschecksum.h \
-    findpeaks.h
+            filebrowser.h
+            #gpschecksum.h \
+            #findpeaks.h
 
 
 FORMS    += mainwindow.ui \

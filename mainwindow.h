@@ -17,8 +17,6 @@ public:
     ~MainWindow();
 
 private slots:
-
-
     void on_btn_addFile_pressed();
 
 private:
