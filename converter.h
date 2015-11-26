@@ -13,12 +13,7 @@
 #include <QGeoCoordinate>
 #include <QColor>
 
-
-struct SensorData {
-    QDateTime dateTime;
-    QGeoCoordinate position;
-    double sog, cog, height, sensor_value;
-};
+#include "sensordata.h"
 
 
 class Converter {

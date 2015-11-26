@@ -1,15 +1,12 @@
 #include <QtWidgets>
-#include <QtWebKitWidgets/QWebView>
-#include <QtWebEngineWidgets>
-#include <QWebEngineView>
-#include <QWebEngineSettings>
+#include <QWebView>
 #include <QDebug>
 #include <QUrl>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addfile.h"
-
+#include "cesiumwebview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,15 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     settings->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, true);
     settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
 
-    ui->cesiumView->setAcceptDrops(true);
+
     ui->cesiumView->setMouseTracking(true);
     */
 
-
+    ui->cesiumView->setAcceptDrops(true);
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
-
-
-
+    //ui->cesiumView->dropEvent();
 
 
 
@@ -72,10 +67,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
 void MainWindow::on_btn_addFile_pressed()
 {
  AddFile addfile;
  addfile.exec();
 }
+
+

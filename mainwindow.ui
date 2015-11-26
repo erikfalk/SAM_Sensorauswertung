@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>910</width>
-    <height>559</height>
+    <height>847</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,13 +44,27 @@
      </widget>
     </item>
     <item>
-     <widget class="QWebView" name="cesiumView">
-      <property name="url">
-       <url>
-        <string>about:blank</string>
-       </url>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="CesiumWebView" name="cesiumView">
+        <property name="url">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCustomPlot" name="widget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>660</width>
+          <height>190</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -71,6 +85,17 @@
    <class>QWebView</class>
    <extends>QWidget</extends>
    <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CesiumWebView</class>
+   <extends>QWebView</extends>
+   <header>cesiumwebview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkitwidgets webenginewidgets positioning
+QT       += core gui webkitwidgets positioning printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,18 +16,18 @@ SOURCES +=  main.cpp\
             mainwindow.cpp \
             converter.cpp \
             addfile.cpp \
-            filebrowser.cpp
-            #gpschecksum.cpp \
-            #findpeaks.cpp
-
+            filebrowser.cpp \
+            qcustomplot.cpp \
+    cesiumwebview.cpp \
+    sensordata.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
             addfile.h \
-            filebrowser.h
-            #gpschecksum.h \
-            #findpeaks.h
-
+            filebrowser.h \
+            qcustomplot.h \
+    cesiumwebview.h \
+    sensordata.h
 
 FORMS    += mainwindow.ui \
             addfile.ui \

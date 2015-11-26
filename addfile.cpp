@@ -11,8 +11,6 @@ AddFile::AddFile(QWidget *parent) :
     ui(new Ui::AddFile)
 {
     ui->setupUi(this);
-
-
 }
 
 AddFile::~AddFile()

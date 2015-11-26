@@ -54,73 +54,76 @@ QColor Converter::mapValueToColor(double sensorValue){
 //extract specific Data from a GPS rawdata csv file
 SensorData Converter::convertString(QString &rawDataString){
 
-    SensorData temp;
-    QStringList list;
+    SensorData sensorDataTemp;
+    QStringList splittedData;
 
-    //split line into tokens and store in list
-    list = rawDataString.split(",");
+    //split line into tokens and store in splittedData
+    splittedData = rawDataString.split(",");
 
-    //claculate lat and lon
-    QString deg;
-    QString min;
+    //extract lat and lon
+    QString degrees;
+    QString minutes;
+    QGeoCoordinate position;
 
     //build lat
-    //extract degrees
-    deg.append(list[3].at(0));
-    deg.append(list[3].at(1));
-    min = list[3].remove(0,2);
+    //extract degrees and minutes
+    degrees.append(splittedData[3].at(0));
+    degrees.append(splittedData[3].at(1));
+    minutes = splittedData[3].remove(0,2);
     //calculate and set degrees
-    temp.position.setLatitude(deg.toDouble() + ((min.toDouble())/60));
-
+    position.setLatitude(degrees.toDouble() + ((minutes.toDouble())/60));
 
     //build lon
-    //extract degrees
-    deg.clear();
-    deg.append(list[5].at(0));
-    deg.append(list[5].at(1));
-    deg.append(list[5].at(2));
-    min = list[5].remove(0,3);
+    //extract degrees and minutes
+    degrees.clear();
+    degrees.append(splittedData[5].at(0));
+    degrees.append(splittedData[5].at(1));
+    degrees.append(splittedData[5].at(2));
+    minutes = splittedData[5].remove(0,3);
     //calculate degrees
-    temp.position.setLongitude(deg.toDouble() + ((min.toDouble())/60));
+    position.setLongitude(degrees.toDouble() + ((minutes.toDouble())/60));
+
+    sensorDataTemp.setPosition(position);
 
     //extract time
-    QTime time(QString(QString(list[1].at(0)) + QString(list[1].at(1))).toInt(),
-               QString(QString(list[1].at(2)) + QString(list[1].at(3))).toInt(),
-               QString(QString(list[1].at(4)) + QString(list[1].at(5))).toInt());
+    QTime time(QString(QString(splittedData[1].at(0)) + QString(splittedData[1].at(1))).toInt(),
+               QString(QString(splittedData[1].at(2)) + QString(splittedData[1].at(3))).toInt(),
+               QString(QString(splittedData[1].at(4)) + QString(splittedData[1].at(5))).toInt());
 
     //extract date
-    QDate date(2000 + QString(QString(list[9].at(4)) + QString(list[9].at(5))).toInt(),
-               QString(QString(list[9].at(2)) + QString(list[9].at(3))).toInt(),
-               QString(QString(list[9].at(0)) + QString(list[9].at(1))).toInt());
+    QDate date(2000 + QString(QString(splittedData[9].at(4)) + QString(splittedData[9].at(5))).toInt(),
+               QString(QString(splittedData[9].at(2)) + QString(splittedData[9].at(3))).toInt(),
+               QString(QString(splittedData[9].at(0)) + QString(splittedData[9].at(1))).toInt());
 
-    temp.dateTime.setTime(time);
-    temp.dateTime.setDate(date);
 
-    //extract speed and course over ground
-    temp.sog = list[8].toDouble();
-    temp.cog = list[9].toDouble();
+    sensorDataTemp.setDateTime(QDateTime(date, time));
+
+
+    //extract and set speed and course over ground
+    sensorDataTemp.setSpeedOverGround(splittedData[8].toDouble());
+    sensorDataTemp.setCourseOverGround(splittedData[9].toDouble());
 
     //check for and add extra data
-    if(list.count() > 13){
-        //extract height
-         temp.height = list[13].toDouble();
+    if(splittedData.count() > 13){
+        //extract and set height
+        sensorDataTemp.setHeight(splittedData[13].toDouble());
 
         //extract sensor value
-         temp.sensor_value = list[14].toDouble();
+        sensorDataTemp.setSensorValue(splittedData[14].toDouble());
 
         //extract minimum and maximum sensor value
-        if(temp.sensor_value > _maxSensorValue)
-            _maxSensorValue = temp.sensor_value;
+        if(sensorDataTemp.getSensorValue() > _maxSensorValue)
+            _maxSensorValue = sensorDataTemp.getSensorValue();
 
-        if(temp.sensor_value < _minSensorValue)
-            _minSensorValue = temp.sensor_value;
+        if(sensorDataTemp.getSensorValue() < _minSensorValue)
+            _minSensorValue = sensorDataTemp.getSensorValue();
 
         //extract latest date and time
-        if(temp.dateTime > _latestDateTime)
-            _latestDateTime = temp.dateTime;
-
+        if(sensorDataTemp.getDateTime() > _latestDateTime)
+            _latestDateTime = sensorDataTemp.getDateTime();
     }
-    return temp;
+
+    return sensorDataTemp;
 }
 
 
@@ -144,12 +147,12 @@ int Converter::writeCzml (QString filename, const QVector<SensorData>& data){
     for(int i = 0; i < data.length(); i++){
 
         //get point color
-        QColor color = mapValueToColor(data[i].sensor_value);
-        qDebug() << data[i].dateTime.toString(Qt::ISODate);
+        QColor color = mapValueToColor(data[i].getSensorValue());
+
 
         czmlData << ",\n{\n \"id\": \"Dataset " << i << "\",\n"
-                    " \"description\": \"Position: " << data[i].position.toString(QGeoCoordinate::DegreesWithHemisphere) << " \",\n"
-                    " \"availability\": \"" << data[i].dateTime.toString(Qt::ISODate) << "Z/"
+                    " \"description\": \"Position: " << data[i].getPosition().toString(QGeoCoordinate::DegreesWithHemisphere) << " \",\n"
+                    " \"availability\": \"" << data[i].getDateTime().toString(Qt::ISODate) << "Z/"
                                            << _latestDateTime.toString(Qt::ISODate) << "Z\",\n"
                     " \"point\":{\n"
                     "  \"color\":{\n"
@@ -166,8 +169,8 @@ int Converter::writeCzml (QString filename, const QVector<SensorData>& data){
                     " },\n";
 
         czmlData << " \"position\":{\n"
-                    "  \"cartographicDegrees\":[" << data[i].position.longitude() << ", "
-                                             << data[i].position.latitude() << ", 0]\n"
+                    "  \"cartographicDegrees\":[" << data[i].getPosition().longitude() << ", "
+                                             << data[i].getPosition().latitude() << ", 0]\n"
                     " }\n"
                     "}";
     }
@@ -223,8 +226,8 @@ void Converter::findPeak(QVector<SensorData> &data){
 
     for(int i=0; i< data.count()-1; i++){
 
-        distance = data[i].position.distanceTo(data[i+1].position);
-        tempTime = data[i].dateTime.secsTo(data[i+1].dateTime);
+        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
+        tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
 
         //speed in km/h
         calcSpeed = (distance/tempTime)*3.6;
