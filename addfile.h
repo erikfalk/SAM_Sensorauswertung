@@ -2,6 +2,7 @@
 #define ADDFILE_H
 
 #include <QDialog>
+#include "converter.h"
 
 namespace Ui {
 class AddFile;
@@ -26,7 +27,7 @@ private slots:
     
 signals:
     void setHint(QString &hint, QString &filetype);
-
+    void fileConverted(Converter *convertedData);
 
 private:
     Ui::AddFile *ui;

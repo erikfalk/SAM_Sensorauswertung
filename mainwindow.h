@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QFileSystemModel>
 
+#include "converter.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -22,6 +24,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *filemodel;
+    QVector<SensorData> *sensorDataForView;
 
 };
 

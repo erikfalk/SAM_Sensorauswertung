@@ -1,3 +1,5 @@
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "converter.h"
 
 Converter::~Converter()
@@ -182,6 +184,26 @@ int Converter::writeCzml (QString filename, const QVector<SensorData>& data){
     czmlFile.close();
 
     return 0;
+}
+
+int Converter::readCzml(QString filename){
+
+    //file opening
+    QFile czmlFile;
+    QString czml;
+    czmlFile.setFileName(filename);
+    if(!czmlFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        return -1;
+    czml = czmlFile.readAll();
+    czmlFile.close();
+
+
+    //json
+    QJsonDocument d = QJsonDocument::fromJson(czml.toUtf8());
+    QJsonObject o = d.object();
+    QString tempName;
+    tempName = o.value(QString("cartographicDegrees")).toString();
+    qDebug() << tempName;
 }
 
 bool Converter::gpsChecksum(QString &dataline){

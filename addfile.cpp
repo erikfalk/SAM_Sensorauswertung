@@ -1,10 +1,10 @@
 #include <QMessageBox>
-
 #include "addfile.h"
 #include "ui_addfile.h"
 #include "filebrowser.h"
 #include "converter.h"
 #include "findpeaks.h"
+#include "mainwindow.h"
 
 AddFile::AddFile(QWidget *parent) :
     QDialog(parent),
@@ -79,11 +79,14 @@ void AddFile::onDst_FileSelected(const QString &path)
 
 void AddFile::on_buttonBox_accepted()
 {
-    Converter myConverter;
+    Converter* myConverter = new Converter;
 
-    myConverter.extractSensorData(ui->source_TextEdit->toPlainText());
+    myConverter->extractSensorData(ui->source_TextEdit->toPlainText());
 
-    if(myConverter.writeCzml(ui->destination_TextEdit->toPlainText(), myConverter.getIncompleteSensorData()) == -1){
+    //Signals to MainWindow where converted data is
+    emit fileConverted(myConverter);
+
+    if(myConverter->writeCzml(ui->destination_TextEdit->toPlainText(), myConverter->getIncompleteSensorData()) == -1){
 
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");

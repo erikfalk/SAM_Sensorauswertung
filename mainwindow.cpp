@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    Converter test;
+    test.readCzml("/Users/erik-falk/Desktop/SAM_Testdaten.czml");
 
     /*
     QWebEngineSettings *settings = ui->cesiumView->settings();
@@ -65,6 +67,7 @@ MainWindow::~MainWindow()
 {
     delete filemodel;
     delete ui;
+    delete sensorDataForView;
 }
 
 void MainWindow::on_btn_addFile_pressed()
@@ -72,5 +75,7 @@ void MainWindow::on_btn_addFile_pressed()
  AddFile addfile;
  addfile.exec();
 }
+
+
 
 

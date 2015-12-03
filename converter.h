@@ -44,7 +44,10 @@ public:
     int extractSensorData(QString filename);
 
     //creates a czml file
-    int writeCzml (QString filename, const QVector<SensorData>& data);
+    int writeCzml(QString filename, const QVector<SensorData>& data);
+
+
+    int readCzml(QString filename);
 
     //setter
     void setCompleteSensorData(QVector<SensorData> complete);
