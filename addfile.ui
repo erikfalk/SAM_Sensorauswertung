@@ -79,41 +79,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="dest_label">
-        <property name="text">
-         <string>Destination:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPlainTextEdit" name="destination_TextEdit">
-        <property name="minimumSize">
-         <size>
-          <width>410</width>
-          <height>29</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>410</width>
-          <height>29</height>
-         </size>
-        </property>
-        <property name="plainText">
-         <string>/Users/erik-falk/Desktop/SAM_Testdaten.czml</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="dst_toolButton">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
     </item>
     <item>
      <widget class="QDialogButtonBox" name="buttonBox">

@@ -12,6 +12,7 @@
 #include <QDate>
 #include <QGeoCoordinate>
 #include <QColor>
+#include <QDir>
 
 #include "sensordata.h"
 
@@ -44,7 +45,7 @@ public:
     int extractSensorData(QString filename);
 
     //creates a czml file
-    int writeCzml(QString filename, const QVector<SensorData>& data);
+    int writeCzml(QDir filePath, const QVector<SensorData>& data);
 
 
     int readCzml(QString filename);

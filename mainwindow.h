@@ -22,6 +22,7 @@ private slots:
     void on_btn_addFile_pressed();
 
 private:
+    QDir _filePath;
     Ui::MainWindow *ui;
     QFileSystemModel *filemodel;
     QVector<SensorData> *sensorDataForView;

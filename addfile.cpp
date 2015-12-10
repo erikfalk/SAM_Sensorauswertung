@@ -5,18 +5,22 @@
 #include "converter.h"
 #include "findpeaks.h"
 #include "mainwindow.h"
+#include "QStandardPaths"
 
-AddFile::AddFile(QWidget *parent) :
+AddFile::AddFile(QDir filePath, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddFile)
 {
     ui->setupUi(this);
+    _filePath = filePath;
 }
 
 AddFile::~AddFile()
 {
     delete ui;
 }
+
+
 
 //filebrowser for csv file
 void AddFile::on_src_toolButton_pressed()
@@ -39,25 +43,6 @@ void AddFile::on_src_toolButton_pressed()
 
 }
 
-//filebrowser for czml file
-void AddFile::on_dst_toolButton_pressed()
-{
-    Filebrowser fb;
-
-    //signal and slot for destination filepath
-    connect(&fb, SIGNAL(FileSelected(QString)),
-            this, SLOT(onDst_FileSelected(QString)));
-
-    //signal and slot for destination hint and filetype
-    connect(this, SIGNAL(setHint(QString&, QString&)),
-            &fb, SLOT(onSetHint(QString&, QString&)));
-
-    QString hint = "<h2><center>Please select a czml file or folder to save the czml file.</center></h2>";
-    QString filetype = "*.czml";
-    emit this->setHint(hint, filetype);
-
-    fb.exec();
-}
 
 //check if file has correct ending and put path into textedit
 void AddFile::onSrc_FileSelected(const QString &path)
@@ -86,7 +71,9 @@ void AddFile::on_buttonBox_accepted()
     //Signals to MainWindow where converted data is
     emit fileConverted(myConverter);
 
-    if(myConverter->writeCzml(ui->destination_TextEdit->toPlainText(), myConverter->getIncompleteSensorData()) == -1){
+
+
+    if(myConverter->writeCzml(_filePath, myConverter->getIncompleteSensorData()) == -1){
 
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");
