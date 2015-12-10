@@ -23,7 +23,13 @@ void CesiumWebView::dropEvent(QDropEvent *event){
     for (int i = 0; i < urlList.size(); i++) {
         pathList.append(urlList.at(i).toLocalFile());
     }
-    czmlConverter.readCzml(pathList.at(0));
+
+        QVector<SensorData> dataForChart;
+        czmlConverter.readCzml(pathList.at(0), dataForChart);
+        for(int i = 0; i < dataForChart.size(); i++){
+            qDebug() << dataForChart[i].getPosition();
+        }
+
    }
 
 

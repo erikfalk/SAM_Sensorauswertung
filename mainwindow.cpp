@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     Converter test;
-    test.readCzml("/Users/erik-falk/Desktop/SAM_Testdaten.czml");
+    //test.readCzml("/Users/erik-falk/Desktop/SAM_Testdaten.czml");
 
     /*
     QWebEngineSettings *settings = ui->cesiumView->settings();

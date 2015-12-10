@@ -47,7 +47,7 @@ public:
     int writeCzml(QString filename, const QVector<SensorData>& data);
 
 
-    int readCzml(QString filename);
+    int readCzml(QString filename, QVector<SensorData>& readSensorData);
 
     //setter
     void setCompleteSensorData(QVector<SensorData> complete);

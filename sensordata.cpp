@@ -1,10 +1,5 @@
 #include "sensordata.h"
 
-SensorData::SensorData()
-{
-
-}
-
 void SensorData::setDateTime(QDateTime dateTime){
     this->dateTime = dateTime;
 }
