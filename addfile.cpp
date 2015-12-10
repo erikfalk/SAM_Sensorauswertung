@@ -3,7 +3,6 @@
 #include "ui_addfile.h"
 #include "filebrowser.h"
 #include "converter.h"
-#include "findpeaks.h"
 #include "mainwindow.h"
 #include "QStandardPaths"
 
@@ -57,10 +56,7 @@ void AddFile::onSrc_FileSelected(const QString &path)
     }
 }
 
-void AddFile::onDst_FileSelected(const QString &path)
-{
-    ui->destination_TextEdit->setPlainText(path);
-}
+
 
 void AddFile::on_buttonBox_accepted()
 {

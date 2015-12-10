@@ -74,7 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
-    ui->treeView->setRootIndex(filemodel->setRootPath(_filePath));
+    qDebug() << appdir;
+    ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
 }

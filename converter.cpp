@@ -133,7 +133,7 @@ SensorData Converter::convertString(QString &rawDataString){
 //creates a czml file
 int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
     QDateTime time;
-    QString fileName = "messung" + time.currentDateTime().toString("yy-MM-dd-mm") + ".czml";
+    QString fileName = "messung" + time.currentDateTime().toString("ss_ddMMyyyy") + ".czml";
 
     QFile czmlFile(filePath.absolutePath() + "/" + fileName);
     

@@ -22,9 +22,7 @@ public:
 private slots:
 
     void on_src_toolButton_pressed();
-    void on_dst_toolButton_pressed();
     void onSrc_FileSelected(const QString &path);
-    void onDst_FileSelected(const QString &path);
     void on_buttonBox_accepted();
     
 signals:
