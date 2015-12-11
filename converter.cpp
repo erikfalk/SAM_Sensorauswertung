@@ -219,9 +219,11 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
         sensordata.setPosition(parsedPosition);
 
         sensordata.setSensorValue(czmlObject["sensorvalue"].toDouble());
+
+        readSensorData.append(sensordata);
     }
 
-
+    return 0;
 }
 
 bool Converter::gpsChecksum(QString &dataline){
@@ -298,11 +300,11 @@ void Converter::setMaxVehicleSpeed(double speed){
     _maxVehicleSpeed = speed;
 }
 
-const QVector<SensorData>& Converter::getCompleteSensorData(){
+const QVector<SensorData>& Converter::getCompleteSensorData() {
     return _completeSensorData;
 }
 
-const QVector<SensorData>& Converter::getIncompleteSensorData(){
+const QVector<SensorData>& Converter::getIncompleteSensorData() {
     return _incompleteSensorData;
 }
 

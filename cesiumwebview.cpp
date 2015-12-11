@@ -2,7 +2,6 @@
 #include <QMimeData>
 
 #include "cesiumwebview.h"
-#include "converter.h"
 
 CesiumWebView::CesiumWebView(QWidget *parent) : QWebView(parent) {
 
@@ -19,22 +18,19 @@ void CesiumWebView::dropEvent(QDropEvent *event){
     QList<QUrl> urlList = mimeData->urls();
     Converter czmlConverter;
 
-    // extract the local paths of the files
+    // extract the local paths of draged file
     for (int i = 0; i < urlList.size(); i++) {
         pathList.append(urlList.at(i).toLocalFile());
     }
+        czmlConverter.readCzml(pathList.at(0), _chartData);
+  }
+  drawChart();
+}
 
-        QVector<SensorData> dataForChart;
-        czmlConverter.readCzml(pathList.at(0), dataForChart);
-        for(int i = 0; i < dataForChart.size(); i++){
-            qDebug() << dataForChart[i].getPosition();
-        }
-
-   }
-
-
-
-
+void CesiumWebView::drawChart()
+{
+    for(int i = 0; i < _chartData.size(); i++)
+        qDebug() << _chartData[i].getPosition();
 }
 
 

@@ -5,6 +5,8 @@
 #include <QWebView>
 #include <QDropEvent>
 
+#include "converter.h"
+
 namespace Ui {
 class CesiumWebView;
 }
@@ -16,9 +18,11 @@ class CesiumWebView : public QWebView
 public:
     CesiumWebView(QWidget *parent = 0);
 
-protected:
+private:
     void dropEvent(QDropEvent *event);
+    void drawChart();
 
+    QVector<SensorData> _chartData;
 
 };
 
