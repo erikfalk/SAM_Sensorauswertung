@@ -1,5 +1,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "converter.h"
 #include <QDir>
 
@@ -176,8 +177,10 @@ int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
         czmlData << " \"position\":{\n"
                     "  \"cartographicDegrees\":[" << data[i].getPosition().longitude() << ", "
                                              << data[i].getPosition().latitude() << ", 0]\n"
-                    " }\n"
-                    "}";
+                    " },\n";
+
+
+        czmlData << " \"sensorvalue\": " << data[i].getSensorValue() << "\n}";
     }
 
     //end
@@ -189,24 +192,41 @@ int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
     return 0;
 }
 
-int Converter::readCzml(QString filename){
+int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
 
     //file opening
     QFile czmlFile;
-    QString czml;
+    QString czmlString;
     czmlFile.setFileName(filename);
     if(!czmlFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return -1;
-    czml = czmlFile.readAll();
+    czmlString = czmlFile.readAll();
     czmlFile.close();
 
 
     //json
-    QJsonDocument d = QJsonDocument::fromJson(czml.toUtf8());
-    QJsonObject o = d.object();
-    QString tempName;
-    tempName = o.value(QString("cartographicDegrees")).toString();
-    qDebug() << tempName;
+    QJsonDocument czmlDoc = QJsonDocument::fromJson(czmlString.toUtf8());
+    QJsonArray czmlArray = czmlDoc.array(), positionArray;
+    QJsonObject czmlObject, positionObject;
+    SensorData sensordata;
+
+    for(int i = 1; i < czmlArray.size(); i++){
+
+        czmlObject = czmlArray[i].toObject();
+        positionObject = czmlObject["position"].toObject();
+        positionArray = positionObject["cartographicDegrees"].toArray();
+        QGeoCoordinate parsedPosition;
+        parsedPosition.setLatitude(positionArray[1].toDouble());
+        parsedPosition.setLongitude(positionArray[0].toDouble());
+        sensordata.setHeight(positionArray[2].toDouble());
+        sensordata.setPosition(parsedPosition);
+
+        sensordata.setSensorValue(czmlObject["sensorvalue"].toDouble());
+
+        readSensorData.append(sensordata);
+    }
+
+    return 0;
 }
 
 bool Converter::gpsChecksum(QString &dataline){
@@ -214,7 +234,6 @@ bool Converter::gpsChecksum(QString &dataline){
     QByteArray datalineBytes = dataline.toUtf8();
     QString recieved_checksum;
     int calc_checksum = 0x00;
-
 
     for(int i = 0; i < datalineBytes.length(); i++){
 
@@ -284,11 +303,11 @@ void Converter::setMaxVehicleSpeed(double speed){
     _maxVehicleSpeed = speed;
 }
 
-const QVector<SensorData>& Converter::getCompleteSensorData(){
+const QVector<SensorData>& Converter::getCompleteSensorData() {
     return _completeSensorData;
 }
 
-const QVector<SensorData>& Converter::getIncompleteSensorData(){
+const QVector<SensorData>& Converter::getIncompleteSensorData() {
     return _incompleteSensorData;
 }
 
