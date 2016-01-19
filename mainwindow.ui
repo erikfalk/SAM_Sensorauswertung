@@ -55,7 +55,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCustomPlot" name="widget" native="true">
+       <widget class="QCustomPlot" name="chartWidget" native="true">
         <property name="minimumSize">
          <size>
           <width>660</width>

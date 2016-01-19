@@ -46,8 +46,11 @@ public:
     //creates a czml file
     int writeCzml(QString filename, const QVector<SensorData>& data);
 
-
+    //reads a czml file
     int readCzml(QString filename, QVector<SensorData>& readSensorData);
+
+    double findMaxSensorValue(QVector<SensorData> &sensordata);
+    double findMinSensorValue(QVector<SensorData> &sensordata);
 
     //setter
     void setCompleteSensorData(QVector<SensorData> complete);

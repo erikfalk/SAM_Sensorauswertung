@@ -6,6 +6,7 @@
 #include <QDropEvent>
 
 #include "converter.h"
+#include "qcustomplot.h"
 
 namespace Ui {
 class CesiumWebView;
@@ -20,10 +21,7 @@ public:
 
 private:
     void dropEvent(QDropEvent *event);
-    void drawChart();
-
-    QVector<SensorData> _chartData;
-
+    void drawDataToChart(QVector<SensorData> &data);
 };
 
 #endif // CESIUMWEBVIEW_H
