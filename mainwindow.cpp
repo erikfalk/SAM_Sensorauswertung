@@ -47,6 +47,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/Cesium/Apps/CesiumViewer/index.html"));
 
+    //get data directory
+    QString appdir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    //check if czml directory exist
+    QDir czml;
+    if (!czml.exists(appdir))
+        czml.mkdir(appdir);
+    //add directory name to pathstring
+    appdir += "/czml";
+
+    _filePath.setPath(appdir);
+    // create dir in case it doesn't exist
+    if(!_filePath.exists())
+        _filePath.mkdir(appdir);
+
+
+
     filemodel = new QFileSystemModel(this);
 
     filemodel->setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
@@ -58,7 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
-    ui->treeView->setRootIndex(filemodel->setRootPath(QDir::rootPath()));
+    qDebug() << appdir;
+    ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
 }
@@ -70,9 +87,10 @@ MainWindow::~MainWindow()
     delete sensorDataForView;
 }
 
+
 void MainWindow::on_btn_addFile_pressed()
 {
- AddFile addfile;
+ AddFile addfile(_filePath);
  addfile.exec();
 }
 

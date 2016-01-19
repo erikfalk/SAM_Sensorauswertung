@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include "converter.h"
+#include <QDir>
 
 Converter::~Converter()
 {
@@ -131,9 +132,11 @@ SensorData Converter::convertString(QString &rawDataString){
 
 
 //creates a czml file
-int Converter::writeCzml (QString filename, const QVector<SensorData>& data){
+int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
+    QDateTime time;
+    QString fileName = "messung" + time.currentDateTime().toString("ss_ddMMyyyy") + ".czml";
 
-    QFile czmlFile(filename);
+    QFile czmlFile(filePath.absolutePath() + "/" + fileName);
     
 
     //open file for writing

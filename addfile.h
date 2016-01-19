@@ -2,6 +2,8 @@
 #define ADDFILE_H
 
 #include <QDialog>
+#include <QDir>
+#include <QString>
 #include "converter.h"
 
 namespace Ui {
@@ -13,16 +15,14 @@ class AddFile : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddFile(QWidget *parent = 0);
+    explicit AddFile(QDir filePath, QWidget *parent = 0);
     ~AddFile();
 
 
 private slots:
 
     void on_src_toolButton_pressed();
-    void on_dst_toolButton_pressed();
     void onSrc_FileSelected(const QString &path);
-    void onDst_FileSelected(const QString &path);
     void on_buttonBox_accepted();
     
 signals:
@@ -31,6 +31,7 @@ signals:
 
 private:
     Ui::AddFile *ui;
+    QDir _filePath;
 };
 
 #endif // ADDFILE_H
