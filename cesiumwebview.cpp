@@ -38,6 +38,7 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     QVector<double> sensorValue, ticks;
 
     QCPBars *sensorValueBars = new QCPBars(plot->xAxis, plot->yAxis);
+    sensorValueBars->setSelectable(true);
     plot->addPlottable(sensorValueBars);
 
     QPen pen;

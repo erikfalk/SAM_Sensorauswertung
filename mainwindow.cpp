@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+
     //ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
 
     //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/cesium.html"));
