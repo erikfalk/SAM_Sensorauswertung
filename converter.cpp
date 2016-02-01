@@ -3,6 +3,8 @@
 #include <QJsonArray>
 #include "converter.h"
 #include <QDir>
+#include <QtMath>
+#include "grubbs.h"
 
 Converter::~Converter()
 {
@@ -266,20 +268,78 @@ bool Converter::gpsChecksum(QString &dataline){
 void Converter::findPeak(QVector<SensorData> &data){
 
     long long int tempTime;
-    double distance, calcSpeed;
+    long degreeOfFreedom;
+    double distance, calcSpeed, height, min = 0, max = 0, mean, sum, stdev, numerator, sigValue;
+    Grubbs outlierSearchData;
+    QVector<Grubbs> outlierSearchDataVector;
 
+
+    //calculate Speed between two points and saved it in vektor
     for(int i=0; i< data.count()-1; i++){
 
         distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
+        height = data[i].getHeight();
         tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
 
         //speed in km/h
-        calcSpeed = (distance/tempTime)*3.6;
+        calcSpeed = (qSqrt((qPow(distance, 2)+qPow(height, 2)))/tempTime)*3.6;
 
-        if(_maxVehicleSpeed <= calcSpeed){
-            data.remove(i);
+        outlierSearchData.setDataID(data[i].getId());
+        outlierSearchData.setSpeed(calcSpeed);
+
+        outlierSearchDataVector.append(outlierSearchData);
+    }
+
+    //locate minimum of vector and calculate sum
+    for(int i=0; i < outlierSearchDataVector.count()-1; i++){
+        if(min == 0){
+            min = outlierSearchDataVector[i].getSpeed();
+        } else if(min > outlierSearchDataVector[i].getSpeed()){
+            min = outlierSearchDataVector[i].getSpeed();
+        }
+
+        sum += outlierSearchDataVector[i].getSpeed();
+    }
+
+    //calculate average over all values
+    mean = sum / outlierSearchDataVector.count();
+
+    //calculate numerator for standard deviation
+    for(int i=0; i < outlierSearchDataVector.count()-1; i++){
+        numerator += qPow((outlierSearchDataVector[i].getSpeed() - mean),2);
+    }
+
+    //calculate standard deviation
+    stdev = qSqrt(numerator / outlierSearchDataVector.count());
+
+    //define significant value
+    sigValue = 0.05 / outlierSearchDataVector.count();
+
+    //define degrees of Freedom for t-distribution
+    degreeOfFreedom = outlierSearchDataVector.count()-2;
+
+    //calculate t-distribution
+
+
+    //calculate gCrit
+
+
+    //calculate G for all values
+    for(int i=0; i < outlierSearchDataVector.count()-1; i++){
+        g = (mean - outlierSearchDataVector[i].getSpeed()) / stdev;
+        outlierSearchDataVector[i].setG(g);
+
+        if(max == 0){
+            max = g;
+        } else if(max < g){
+            max = g;
         }
     }
+
+    if(max > gCrit)
+
+
+
 }
 
 //setter and getter

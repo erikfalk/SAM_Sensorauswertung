@@ -19,7 +19,8 @@ SOURCES +=  main.cpp\
             filebrowser.cpp \
             qcustomplot.cpp \
     cesiumwebview.cpp \
-    sensordata.cpp
+    sensordata.cpp \
+    grubbs.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
             filebrowser.h \
             qcustomplot.h \
     cesiumwebview.h \
-    sensordata.h
+    sensordata.h \
+    grubbs.h
 
 FORMS    += mainwindow.ui \
             addfile.ui \

@@ -24,6 +24,11 @@ void SensorData::setSensorValue(double sensorValue){
     this->sensorValue = sensorValue;
 }
 
+void SensorData::setID(long id)
+{
+    this->id = id;
+}
+
 QDateTime SensorData::getDateTime() const{
     return dateTime;
 }
@@ -46,4 +51,9 @@ double SensorData::getHeight() const{
 
 double SensorData::getSensorValue() const{
     return sensorValue;
+}
+
+long SensorData::getId() const
+{
+    return id;
 }
