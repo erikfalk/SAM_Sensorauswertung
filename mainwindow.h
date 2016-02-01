@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 
 #include "converter.h"
+#include "qcustomplot.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
 
 private slots:
     void on_btn_addFile_pressed();
+    void plotMousePress(QCPAbstractPlottable*, QMouseEvent *event);
 
 private:
     QDir _filePath;

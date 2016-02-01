@@ -50,7 +50,7 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     //prepare x-axis
     for(int i = 0; i < data.count(); i++){
        ticks << i;
-       valuePosition << data[i].getPosition().toString();
+       valuePosition << QString::number(-i);
     }
     plot->xAxis->setAutoTicks(false);
     plot->xAxis->setAutoTickLabels(false);
