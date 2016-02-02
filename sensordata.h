@@ -32,8 +32,6 @@ public:
     double getCourseOverGround() const;
     double getHeight() const;
     double getSensorValue() const;
-
-
 };
 
 #endif // SENSORDATA_H

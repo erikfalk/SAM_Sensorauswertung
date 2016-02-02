@@ -19,6 +19,9 @@ class CesiumWebView : public QWebView
 public:
     CesiumWebView(QWidget *parent = 0);
 
+signals:
+    void sendSensorData(QVector<SensorData> &data);
+
 private:
     void dropEvent(QDropEvent *event);
     void drawDataToChart(QVector<SensorData> &data);

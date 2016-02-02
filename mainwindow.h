@@ -6,6 +6,7 @@
 
 #include "converter.h"
 #include "qcustomplot.h"
+#include "sensordata.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,12 +23,14 @@ public:
 private slots:
     void on_btn_addFile_pressed();
     void plotMousePress(QCPAbstractPlottable*, QMouseEvent *event);
+    void onSensorDataRecieved(QVector<SensorData> &data);
 
 private:
     QDir _filePath;
     Ui::MainWindow *ui;
     QFileSystemModel *filemodel;
-    QVector<SensorData> *sensorDataForView;
+    QVector<SensorData> _loadedSensorData;
+
 
 };
 

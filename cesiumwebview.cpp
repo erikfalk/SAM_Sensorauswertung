@@ -25,7 +25,9 @@ void CesiumWebView::dropEvent(QDropEvent *event){
         pathList.append(urlList.at(i).toLocalFile());
     }
         czmlConverter.readCzml(pathList.at(0), sensordata);
+        emit sendSensorData(sensordata);
         drawDataToChart(sensordata);
+
   }
 }
 

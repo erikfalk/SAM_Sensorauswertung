@@ -1,8 +1,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include "converter.h"
 #include <QDir>
+#include "converter.h"
+
 
 Converter::~Converter()
 {
@@ -43,16 +44,38 @@ int Converter::extractSensorData(QString filename){
     return 0;
 }
 
-//returns a color, between red and green, corrosponding to the sensorvalue
-QColor Converter::mapValueToColor(double sensorValue){
+//calculates the gps checksum
+bool Converter::gpsChecksum(QString &dataline){
 
-    //calculate hue
-    double hue = (_maxSensorValue-sensorValue)/((_maxSensorValue-_minSensorValue)*3);
+    QByteArray datalineBytes = dataline.toUtf8();
+    QString recieved_checksum;
+    int calc_checksum = 0x00;
 
-    //calculate corrosponding color
-    QColor color = QColor::fromHsvF(hue, 1.0, 1.0);
+    for(int i = 0; i < datalineBytes.length(); i++){
 
-    return color.toRgb();
+            switch(datalineBytes[i]){
+
+                case '$': break;
+
+                case '*': {
+                    //extract recieved checksum
+                    recieved_checksum.append(datalineBytes.at(i+1));
+                    recieved_checksum.append(datalineBytes.at(i+2));
+                    i = datalineBytes.length();
+                    break;
+                }
+
+                default: {
+                    calc_checksum ^= datalineBytes[i];
+                }
+            }
+    }
+
+    bool ok;
+    if(calc_checksum == recieved_checksum.toInt(&ok,16))
+        return true;
+
+    return false;
 }
 
 //extract specific Data from a GPS rawdata csv file
@@ -130,6 +153,25 @@ SensorData Converter::convertString(QString &rawDataString){
     return sensorDataTemp;
 }
 
+//find and remove peaks
+void Converter::findPeak(QVector<SensorData> &data){
+
+    long long int tempTime;
+    double distance, calcSpeed;
+
+    for(int i=0; i< data.count()-1; i++){
+
+        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
+        tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
+
+        //speed in km/h
+        calcSpeed = (distance/tempTime)*3.6;
+
+        if(_maxVehicleSpeed <= calcSpeed){
+            data.remove(i);
+        }
+    }
+}
 
 //creates a czml file
 int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
@@ -192,6 +234,19 @@ int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
     return 0;
 }
 
+//returns a color, between red and green, corrosponding to the sensorvalue
+QColor Converter::mapValueToColor(double sensorValue){
+
+    //calculate hue
+    double hue = (_maxSensorValue-sensorValue)/((_maxSensorValue-_minSensorValue)*3);
+
+    //calculate corrosponding color
+    QColor color = QColor::fromHsvF(hue, 1.0, 1.0);
+
+    return color.toRgb();
+}
+
+//read data from czml file and put it into a Vector
 int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
 
     //file opening
@@ -218,8 +273,8 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
         QGeoCoordinate parsedPosition;
         parsedPosition.setLatitude(positionArray[1].toDouble());
         parsedPosition.setLongitude(positionArray[0].toDouble());
-        sensordata.setHeight(positionArray[2].toDouble());
         sensordata.setPosition(parsedPosition);
+        sensordata.setHeight(positionArray[2].toDouble());
 
         sensordata.setSensorValue(czmlObject["sensorvalue"].toDouble());
 
@@ -227,59 +282,6 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
     }
 
     return 0;
-}
-
-bool Converter::gpsChecksum(QString &dataline){
-
-    QByteArray datalineBytes = dataline.toUtf8();
-    QString recieved_checksum;
-    int calc_checksum = 0x00;
-
-    for(int i = 0; i < datalineBytes.length(); i++){
-
-            switch(datalineBytes[i]){
-
-                case '$': break;
-
-                case '*': {
-                    //extract recieved checksum
-                    recieved_checksum.append(datalineBytes.at(i+1));
-                    recieved_checksum.append(datalineBytes.at(i+2));
-                    i = datalineBytes.length();
-                    break;
-                }
-
-                default: {
-                    calc_checksum ^= datalineBytes[i];
-                }
-            }
-    }
-
-    bool ok;
-    if(calc_checksum == recieved_checksum.toInt(&ok,16))
-        return true;
-
-    return false;
-}
-
-//find and remove peaks
-void Converter::findPeak(QVector<SensorData> &data){
-
-    long long int tempTime;
-    double distance, calcSpeed;
-
-    for(int i=0; i< data.count()-1; i++){
-
-        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
-        tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
-
-        //speed in km/h
-        calcSpeed = (distance/tempTime)*3.6;
-
-        if(_maxVehicleSpeed <= calcSpeed){
-            data.remove(i);
-        }
-    }
 }
 
 //setter and getter

@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setAutoScroll(true);
 
     connect(ui->chartWidget, &QCustomPlot::plottableClick, this, &MainWindow::plotMousePress);
+    connect(ui->cesiumView, &CesiumWebView::sendSensorData, this, &MainWindow::onSensorDataRecieved);
 
 }
 
@@ -75,7 +76,6 @@ MainWindow::~MainWindow()
 {
     delete filemodel;
     delete ui;
-    delete sensorDataForView;
 }
 
 
@@ -147,4 +147,15 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
             }
          }
     }
+}
+
+void MainWindow::onSensorDataRecieved(QVector<SensorData> &data){
+    if(!_loadedSensorData.isEmpty())
+       _loadedSensorData.clear();
+
+    _loadedSensorData = data;
+    for(int i = 0; i < _loadedSensorData.size(); i++){
+        qDebug() << _loadedSensorData.at(i).getPosition();
+    }
+
 }
