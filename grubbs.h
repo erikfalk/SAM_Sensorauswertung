@@ -16,9 +16,6 @@ public:
     double getG() const;
 
 
-signals:
-
-public slots:
 };
 
 #endif // GRUBBS_H

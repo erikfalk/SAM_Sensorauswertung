@@ -1,10 +1,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include "converter.h"
 #include <QDir>
 #include <QtMath>
+
 #include "grubbs.h"
+#include "converter.h"
 #include "specialfunctions.h"
 
 Converter::~Converter()
@@ -343,8 +344,8 @@ void Converter::findPeak(QVector<SensorData> &data){
             }
         }
         if(toDeleteVariable != -1){
-            outlierSearchDataVector.erase(toDeleteVariable);
-            data.erase(toDeleteVariable);
+            outlierSearchDataVector.remove(toDeleteVariable);
+            data.remove(toDeleteVariable);
             foundOutlier = true;
         }
     } while (foundOutlier);
