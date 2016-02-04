@@ -24,7 +24,7 @@ signals:
 
 private:
     void dropEvent(QDropEvent *event);
-    void drawDataToChart(QVector<SensorData> &data);
+    void drawDataToChart(Converter &data);
 };
 
 #endif // CESIUMWEBVIEW_H

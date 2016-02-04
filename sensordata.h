@@ -9,6 +9,7 @@ class SensorData
 {
 
 private:
+    long id;
     QDateTime dateTime;
     QGeoCoordinate position;
     double speedOverGround;
@@ -17,8 +18,9 @@ private:
     double sensorValue;
 
 public:
-    SensorData(double h = 0.0) : height(h){}
+    SensorData(long id = 0, double h = 0.0) : id(id), height(h){}
 
+    void setId(long id);
     void setDateTime(QDateTime dateTime);
     void setPosition(QGeoCoordinate position);
     void setSpeedOverGround(double sog);
@@ -26,6 +28,7 @@ public:
     void setHeight(double height);
     void setSensorValue(double sensorValue);
 
+    long getId() const;
     QDateTime getDateTime() const;
     QGeoCoordinate getPosition() const;
     double getSpeedOverGround() const;

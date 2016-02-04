@@ -20,12 +20,12 @@
 class Converter {
 
 private:
-    QVector<SensorData> _completeSensorData, _incompleteSensorData;
+    QVector<SensorData> _completeSensorData;
     QDateTime _latestDateTime;
     double _maxSensorValue, _minSensorValue, _maxVehicleSpeed;
 
-    //convertes a line from the csv file into the struct
-    SensorData convertString (QString &rawDataString);
+    //convertes a line from the csv file into the data object
+    SensorData convertString (long id, QString &rawDataString);
 
     //find and removes peaks in data
     void findPeak(QVector<SensorData>& data);
@@ -44,25 +44,23 @@ public:
     //extract specific Data from a GPS rawdata csv file
     int extractSensorData(QString filename);
 
-    //creates a czml file
+    //creates a czml file from data stored in the vector
     int writeCzml(QDir filePath, const QVector<SensorData>& data);
 
-    //reads a czml file
+    //reads a czml file and stores data in the vector
     int readCzml(QString filename, QVector<SensorData>& readSensorData);
+    long getIdFromCzmlString(QString idString);
 
-    double findMaxSensorValue(QVector<SensorData> &sensordata);
-    double findMinSensorValue(QVector<SensorData> &sensordata);
+    void findMinMaxSensorValue();
 
     //setter
     void setCompleteSensorData(QVector<SensorData> complete);
-    void setIncompleteSensorData(QVector<SensorData> incomplete);
     void setMaxSensorValue(double value);
     void setMinSensorValue(double value);
     void setMaxVehicleSpeed(double speed);
 
     //getter
-    const QVector<SensorData>& getCompleteSensorData();
-    const QVector<SensorData>& getIncompleteSensorData();
+    QVector<SensorData>& getCompleteSensorData();
     double getMaxSensorValue() const;
     double getMinSensorValue() const;
     double getMaxVehicleSpeed() const;

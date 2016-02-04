@@ -87,7 +87,7 @@ void MainWindow::on_btn_addFile_pressed()
 
 void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event)
 {
-    if(event->button() == Qt::RightButton)
+    if(event->button() == Qt::LeftButton)
     {
         if(plottable)
         {
@@ -98,7 +98,6 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
 
             double key = 0;
             double value = 0;
-            QString xValue;
 
             bool ok = false;
             double m = std::numeric_limits<double>::max();
@@ -134,28 +133,43 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
                            "<th colspan=\"2\">%L1</th>"
                          "</tr>"
                          "<tr>"
-                           "<td>Key:</td>" "<td>%L2</td>"
+                           "<td>Bar Nr:</td>" "<td>%L2</td>"
                          "</tr>"
                          "<tr>"
                            "<td>Val:</td>" "<td>%L3</td>"
                          "</tr>"
+                         "<tr>"
+                            "<td>x-Axis Val:</td>" "<td>%L4</td>"
+                         "</tr>"
                        "</table>").
                        arg(bar->name().isEmpty() ? "..." : bar->name()).
                        arg(key).
-                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),
+                       arg(value).
+                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),                    
                        ui->chartWidget, ui->chartWidget->rect());
+                       showLocationOnMap(_loadedSensorData.at(key).getPosition());
+
             }
          }
     }
 }
+
+void MainWindow::showLocationOnMap(QGeoCoordinate location) {
+
+    QWebElement webelement;
+    QWebFrame* frame = ui->webView->page()->currentFrame();
+
+
+    webelement = frame->findFirstElement("input[type=search]");
+    webelement.setFocus();
+    webelement.setAttribute("value", location.toString());
+}
+
 
 void MainWindow::onSensorDataRecieved(QVector<SensorData> &data){
     if(!_loadedSensorData.isEmpty())
        _loadedSensorData.clear();
 
     _loadedSensorData = data;
-    for(int i = 0; i < _loadedSensorData.size(); i++){
-        qDebug() << _loadedSensorData.at(i).getPosition();
-    }
-
 }
+

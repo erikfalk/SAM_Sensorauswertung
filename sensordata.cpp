@@ -1,5 +1,9 @@
 #include "sensordata.h"
 
+void SensorData::setId(long id) {
+    this->id = id;
+}
+
 void SensorData::setDateTime(QDateTime dateTime){
     this->dateTime = dateTime;
 }
@@ -22,6 +26,11 @@ void SensorData::setHeight(double height){
 
 void SensorData::setSensorValue(double sensorValue){
     this->sensorValue = sensorValue;
+}
+
+
+long SensorData::getId() const {
+    return id;
 }
 
 QDateTime SensorData::getDateTime() const{

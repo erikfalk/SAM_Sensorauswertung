@@ -23,23 +23,22 @@ int Converter::extractSensorData(QString filename){
     }
 
     //add data to vector
+    long lineId = 0;
     while(!rawData.atEnd()){
 
        QString line = rawData.readLine();
-
+        lineId++;
        //check for complete dataset
-       if(gpsChecksum(line)){
-           _completeSensorData.append(convertString(line));
-       }else{
-           _incompleteSensorData.append(convertString(line));
-       }
+       //if(gpsChecksum(line))
+           _completeSensorData.append(convertString(lineId, line));
+
      }
 
     rawDataFile.flush();
     rawDataFile.close();
 
     //find and remove peaks
-    findPeak(_incompleteSensorData);
+    findPeak(_completeSensorData);
 
     return 0;
 }
@@ -79,9 +78,9 @@ bool Converter::gpsChecksum(QString &dataline){
 }
 
 //extract specific Data from a GPS rawdata csv file
-SensorData Converter::convertString(QString &rawDataString){
+SensorData Converter::convertString(long dataId, QString &rawDataString){
 
-    SensorData sensorDataTemp;
+    SensorData sensorDataTemp(dataId);
     QStringList splittedData;
 
     //split line into tokens and store in splittedData
@@ -198,7 +197,7 @@ int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
         QColor color = mapValueToColor(data[i].getSensorValue());
 
 
-        czmlData << ",\n{\n \"id\": \"Dataset " << i << "\",\n"
+        czmlData << ",\n{\n \"id\": \"Monitoring point: " << data[i].getId() << "\",\n"
                     " \"description\": \"Position: " << data[i].getPosition().toString(QGeoCoordinate::DegreesWithHemisphere) << " \",\n"
                     " \"availability\": \"" << data[i].getDateTime().toString(Qt::ISODate) << "Z/"
                                            << _latestDateTime.toString(Qt::ISODate) << "Z\",\n"
@@ -246,6 +245,20 @@ QColor Converter::mapValueToColor(double sensorValue){
     return color.toRgb();
 }
 
+void Converter::findMinMaxSensorValue() {
+
+    double sensorValue;
+    for(int i = 0; i < _completeSensorData.count(); i++){
+        sensorValue = _completeSensorData.at(i).getSensorValue();
+
+        if(sensorValue >= _maxSensorValue)
+            _maxSensorValue = sensorValue;
+
+        if(sensorValue <= _minSensorValue)
+            _minSensorValue = sensorValue;
+    }
+}
+
 //read data from czml file and put it into a Vector
 int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
 
@@ -268,6 +281,9 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
     for(int i = 1; i < czmlArray.size(); i++){
 
         czmlObject = czmlArray[i].toObject();
+        QString id = czmlObject["id"].toString();
+        sensordata.setId(getIdFromCzmlString(id));
+
         positionObject = czmlObject["position"].toObject();
         positionArray = positionObject["cartographicDegrees"].toArray();
         QGeoCoordinate parsedPosition;
@@ -284,13 +300,19 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
     return 0;
 }
 
+long Converter::getIdFromCzmlString(QString idString){
+    QRegExp numberFilter("(-?\\d+(?:[\\.,]\\d+(?:e\\d+)?)?)");
+    numberFilter.indexIn(idString);
+    QStringList idList = numberFilter.capturedTexts();
+    if(idList.isEmpty())
+        return -1;
+
+    return idList.begin()->toLong();
+}
+
 //setter and getter
 void Converter::setCompleteSensorData(QVector<SensorData> complete){
     _completeSensorData = complete;
-}
-
-void Converter::setIncompleteSensorData(QVector<SensorData> incomplete){
-    _incompleteSensorData = incomplete;
 }
 
 void Converter::setMaxSensorValue(double value){
@@ -305,13 +327,10 @@ void Converter::setMaxVehicleSpeed(double speed){
     _maxVehicleSpeed = speed;
 }
 
-const QVector<SensorData>& Converter::getCompleteSensorData() {
+QVector<SensorData>& Converter::getCompleteSensorData() {
     return _completeSensorData;
 }
 
-const QVector<SensorData>& Converter::getIncompleteSensorData() {
-    return _incompleteSensorData;
-}
 
 double Converter::getMaxSensorValue() const{
     return _maxSensorValue;
