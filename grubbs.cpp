@@ -5,12 +5,6 @@ Grubbs::Grubbs()
 
 }
 
-
-void Grubbs::setDataID(long dataID)
-{
-    _dataID = dataID;
-}
-
 void Grubbs::setSpeed(double speed)
 {
     _speed = speed;
@@ -19,12 +13,6 @@ void Grubbs::setSpeed(double speed)
 void Grubbs::setG(double g)
 {
     _G = g;
-}
-
-
-long Grubbs::getDataID() const
-{
-    return _dataID;
 }
 
 double Grubbs::getSpeed() const

@@ -53,7 +53,7 @@ double SensorData::getSensorValue() const{
     return sensorValue;
 }
 
-long SensorData::getId() const
+long SensorData::getID() const
 {
     return id;
 }

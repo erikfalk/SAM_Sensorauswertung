@@ -20,7 +20,10 @@ SOURCES +=  main.cpp\
             qcustomplot.cpp \
     cesiumwebview.cpp \
     sensordata.cpp \
-    grubbs.cpp
+    grubbs.cpp \
+    gpschecksum.cpp \
+    test.cpp \
+    specialfunctions.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -29,7 +32,11 @@ HEADERS  += mainwindow.h \
             qcustomplot.h \
     cesiumwebview.h \
     sensordata.h \
-    grubbs.h
+    grubbs.h \
+    specialfunctions.h \
+    stdafx.h
+
+    gpschecksum.h
 
 FORMS    += mainwindow.ui \
             addfile.ui \

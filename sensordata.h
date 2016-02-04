@@ -34,7 +34,7 @@ public:
     double getCourseOverGround() const;
     double getHeight() const;
     double getSensorValue() const;
-    long getId() const;
+    long getID() const;
 
 
 };
