@@ -23,7 +23,9 @@ SOURCES +=  main.cpp\
     grubbs.cpp \
     gpschecksum.cpp \
     test.cpp \
-    specialfunctions.cpp
+    specialfunctions.cpp \
+    alglibinternal.cpp \
+    ap.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -34,7 +36,9 @@ HEADERS  += mainwindow.h \
     sensordata.h \
     grubbs.h \
     specialfunctions.h \
-    stdafx.h
+    stdafx.h \
+    alglibinternal.h \
+    ap.h
 
     gpschecksum.h
 
