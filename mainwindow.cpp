@@ -30,23 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
     settings->setAttribute(QWebEngineSettings::ErrorPageEnabled, true);
     settings->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, true);
     settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-
-
     ui->cesiumView->setMouseTracking(true);
     */
 
     ui->cesiumView->setAcceptDrops(true);
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
-    //ui->cesiumView->dropEvent();
-
-
-
-
-    //ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
-
-    //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/cesium.html"));
-
-    //ui->cesiumView->load(QUrl("file:///Users/erik-falk/Qt_Projects/SAM_Sensorauswertung/Cesium/Apps/CesiumViewer/index.html"));
 
     //get data directory
     QString appdir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
@@ -79,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
+    connect(ui->chartWidget, &QCustomPlot::plottableClick, this, &MainWindow::plotMousePress);
+
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +85,66 @@ void MainWindow::on_btn_addFile_pressed()
  addfile.exec();
 }
 
+void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event)
+{
+    if(event->button() == Qt::RightButton)
+    {
+        if(plottable)
+        {
+            double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
+            double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
 
+            QCPBars *bar = qobject_cast<QCPBars*>(plottable);
 
+            double key = 0;
+            double value = 0;
+            QString xValue;
 
+            bool ok = false;
+            double m = std::numeric_limits<double>::max();
+
+            foreach(QCPBarData data, bar->data()->values())
+                {
+                    double d = qAbs(x - data.key);
+
+                    if(d < m)
+                    {
+
+                        key = data.key;
+                        value = data.value;
+
+                        ok = true;
+                        m = d;
+                    }
+                }
+
+            if(ok)
+            {
+               for(QCPBars *below = bar->barBelow();
+                  ((below != NULL) && below->data()->contains(key));
+                    below = below->barBelow())
+                    {
+                        value += below->data()->value(key).value;
+                    }
+
+                    QToolTip::hideText();
+                    QToolTip::showText(event->globalPos(),
+                    tr("<table>"
+                         "<tr>"
+                           "<th colspan=\"2\">%L1</th>"
+                         "</tr>"
+                         "<tr>"
+                           "<td>Key:</td>" "<td>%L2</td>"
+                         "</tr>"
+                         "<tr>"
+                           "<td>Val:</td>" "<td>%L3</td>"
+                         "</tr>"
+                       "</table>").
+                       arg(bar->name().isEmpty() ? "..." : bar->name()).
+                       arg(key).
+                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),
+                       ui->chartWidget, ui->chartWidget->rect());
+            }
+         }
+    }
+}

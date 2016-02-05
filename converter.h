@@ -38,7 +38,7 @@ private:
 
 public:
 
-    Converter() : _maxSensorValue(1.7e-308), _minSensorValue(1.7e+308), _maxVehicleSpeed(20){}
+    Converter() : _maxSensorValue(std::numeric_limits<double>::min()), _minSensorValue(std::numeric_limits<double>::max()), _maxVehicleSpeed(20){}
     ~Converter();
 
     //extract specific Data from a GPS rawdata csv file
