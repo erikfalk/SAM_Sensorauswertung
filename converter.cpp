@@ -28,11 +28,12 @@ int Converter::extractSensorData(QString filename){
 
        QString line = rawData.readLine();
 
+       if(line.contains("$GPRMC")) {
         lineId++;
-       //check for complete dataset
-       //if(gpsChecksum(line))
-       _completeSensorData.append(convertString(lineId, line));
-
+        //check for complete dataset
+        if(gpsChecksum(line))
+            _completeSensorData.append(convertString(lineId, line));
+       }
      }
 
     rawDataFile.flush();
@@ -124,6 +125,7 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
     date = date.addYears(100);
 
     sensorDataTemp.setDateTime(QDateTime(date, time));
+    qDebug() << sensorDataTemp.getDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz");
 
     //extract and set speed and course over ground
     sensorDataTemp.setSpeedOverGround(splittedData[8].toDouble());
