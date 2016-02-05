@@ -42,7 +42,7 @@ int Converter::extractSensorData(QString filename){
     rawDataFile.close();
 
     //find and remove peaks
-    findPeak(_incompleteSensorData);
+    findPeak(_completeSensorData);
 
     return 0;
 }
@@ -269,52 +269,58 @@ bool Converter::gpsChecksum(QString &dataline){
 //find and remove peaks
 void Converter::findPeak(QVector<SensorData> &data){
 
-    long long int tempTime;
-    long degreeOfFreedom, toDeleteVariable, outlierDataCount;
-    double distance, calcSpeed, height, min = 0, max = 0, gCrit, mean, sum, stdev, numerator, sigValue, g;
+    long degreeOfFreedom, toDeleteVariable = -1, outlierDataCount;
+    double timeToPoint, distance, calcSpeed, heightDif, max = 0, tCrit, gCrit, mean, sum = 0, stdev, numerator = 0, sigValue, g;
     bool foundOutlier;
     Grubbs outlierSearchData;
     QVector<Grubbs> outlierSearchDataVector;
 
     do{
         //calculate Speed between two points and saved it in vektor
-        for(int i=0; i< data.count()-1; i++){
+        qDebug() << "Geschwindigkeitsberechnung";
+        for(int i=0; i < data.count()-1; i++){
 
             distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
-            height = data[i].getHeight();
-            tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
+            heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
+            timeToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
+
+            //change duration in seconds
+            timeToPoint * 1000;
 
             //speed in m/s
-            calcSpeed = (qSqrt((qPow(distance, 2)+qPow(height, 2)))/tempTime);
+            if(timeToPoint == 0.0){
+                calcSpeed = 0.0;
+            } else {
+                calcSpeed = ( qSqrt( qPow(heightDif, 2) + qPow(distance, 2 ) ) ) / timeToPoint;
+            }
 
+            if(i < 35){
+                qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << calcSpeed << " heightDif " << heightDif << " distance: " << distance << "seconds" << tempTime;
+            }
+
+            //calculate sum for mean
+            sum += calcSpeed;
+
+            //add data to vector
             outlierSearchData.setSpeed(calcSpeed);
-
             outlierSearchDataVector.append(outlierSearchData);
         }
 
         outlierDataCount = outlierSearchDataVector.count();
 
-        //locate minimum of vector and calculate sum
-        for(int i=0; i < outlierDataCount-1; i++){
-            if(min == 0){
-                min = outlierSearchDataVector[i].getSpeed();
-            } else if(min > outlierSearchDataVector[i].getSpeed()){
-                min = outlierSearchDataVector[i].getSpeed();
-            }
-
-            sum += outlierSearchDataVector[i].getSpeed();
-        }
-
         //calculate average over all values
-        mean = sum / outlierSearchDataVector.count();
+        mean = sum / outlierDataCount;
+        qDebug() << "mittelwert: " << mean;
 
         //calculate numerator for standard deviation
+        qDebug() << "Zähler bestimmen";
         for(int i=0; i < outlierDataCount-1; i++){
             numerator += qPow((outlierSearchDataVector[i].getSpeed() - mean),2);
         }
 
         //calculate standard deviation
         stdev = qSqrt(numerator / outlierDataCount);
+        qDebug() << "standardverteilung: " << stdev;
 
         //define significant value
         sigValue = 0.05 / outlierDataCount;
@@ -323,15 +329,23 @@ void Converter::findPeak(QVector<SensorData> &data){
         degreeOfFreedom = outlierDataCount-2;
 
         //calculate t-distribution -- need to calculate gCrit
-        double tCrit = alglib::invstudenttdistribution(degreeOfFreedom, sigValue);
+        tCrit = qFabs(alglib::invstudenttdistribution(degreeOfFreedom, sigValue));
 
-        //calculate gCrit -- all points with G over gCrit are outliers
+        //calculate gCrit -- all points with a G value over gCrit are outliers
         gCrit = (outlierDataCount-1)*tCrit/qSqrt(outlierDataCount*((outlierDataCount-2)+qPow(tCrit, 2)));
+        qDebug() << "Anzahl: " << outlierDataCount;
+        qDebug() << "tCrit: " << tCrit;
+        qDebug() << "cGrit: " << gCrit;
 
-        //calculate G for all values
-        for(int i=0; i < outlierSearchDataVector.count()-1; i++){
-            g = (mean - outlierSearchDataVector[i].getSpeed()) / stdev;
+        //calculate G for all values and find the dataset with the highest G value over gCrit
+        qDebug() << "G berechnen";
+        for(int i=0; i < outlierDataCount-1; i++){
+            g = qFabs((mean - outlierSearchDataVector[i].getSpeed()) / stdev);
             outlierSearchDataVector[i].setG(g);
+
+            if(i < 35){
+                qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << outlierSearchDataVector[i].getSpeed() << " G: " << g;
+            }
 
             if(gCrit < g){
                 if(max == 0){
@@ -343,11 +357,15 @@ void Converter::findPeak(QVector<SensorData> &data){
                 }
             }
         }
+
+        // delete the dataset with the highest G value over gCrit
         if(toDeleteVariable != -1){
+            qDebug() << "Daten mit ID: " << toDeleteVariable << "wurde geloescht";
             outlierSearchDataVector.remove(toDeleteVariable);
             data.remove(toDeleteVariable);
             foundOutlier = true;
         }
+
     } while (foundOutlier);
 
 }
