@@ -2,16 +2,13 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
-<<<<<<< HEAD
 #include <QtMath>
 
 #include "grubbs.h"
 #include "converter.h"
 #include "specialfunctions.h"
-=======
 #include "converter.h"
 
->>>>>>> 55bb8e491d1713be2645af731f4359b507343589
 
 Converter::~Converter()
 {
@@ -48,11 +45,9 @@ int Converter::extractSensorData(QString filename){
     rawDataFile.close();
 
     //find and remove peaks
-<<<<<<< HEAD
+
     findPeak(_completeSensorData);
-=======
-    //findPeak(_completeSensorData);
->>>>>>> 55bb8e491d1713be2645af731f4359b507343589
+
 
     return 0;
 }
@@ -137,7 +132,7 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
     date = date.addYears(100);
 
     sensorDataTemp.setDateTime(QDateTime(date, time));
-    qDebug() << sensorDataTemp.getDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz");
+    //qDebug() << sensorDataTemp.getDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz");
 
     //extract and set speed and course over ground
     sensorDataTemp.setSpeedOverGround(splittedData[8].toDouble());
@@ -164,26 +159,6 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
         _latestDateTime = sensorDataTemp.getDateTime();
 
     return sensorDataTemp;
-}
-
-//find and remove peaks
-void Converter::findPeak(QVector<SensorData> &data){
-
-    long long int tempTime;
-    double distance, calcSpeed;
-
-    for(int i=0; i< data.count()-1; i++){
-
-        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
-        tempTime = data[i].getDateTime().secsTo(data[i+1].getDateTime());
-
-        //speed in km/h
-        calcSpeed = (distance/tempTime)*3.6;
-
-        if(_maxVehicleSpeed <= calcSpeed){
-            data.remove(i);
-        }
-    }
 }
 
 //creates a czml file
@@ -314,40 +289,6 @@ int Converter::readCzml(QString filename ,QVector<SensorData> &readSensorData){
     return 0;
 }
 
-<<<<<<< HEAD
-bool Converter::gpsChecksum(QString &dataline){
-
-    QByteArray datalineBytes = dataline.toUtf8();
-    QString recieved_checksum;
-    int calc_checksum = 0x00;
-
-    for(int i = 0; i < datalineBytes.length(); i++){
-
-            switch(datalineBytes[i]){
-
-                case '$': break;
-
-                case '*': {
-                    //extract recieved checksum
-                    recieved_checksum.append(datalineBytes.at(i+1));
-                    recieved_checksum.append(datalineBytes.at(i+2));
-                    i = datalineBytes.length();
-                    break;
-                }
-
-                default: {
-                    calc_checksum ^= datalineBytes[i];
-                }
-            }
-    }
-
-    bool ok;
-    if(calc_checksum == recieved_checksum.toInt(&ok,16))
-        return true;
-
-    return false;
-}
-
 //find and remove peaks
 void Converter::findPeak(QVector<SensorData> &data){
 
@@ -366,7 +307,7 @@ void Converter::findPeak(QVector<SensorData> &data){
         heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
         millisecsToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
 
-        qDebug() << "milliseconds: " << millisecsToPoint;
+        //qDebug() << "milliseconds: " << millisecsToPoint;
 
         //change duration in seconds
         timeToPoint = millisecsToPoint / 1000.0;
@@ -378,7 +319,7 @@ void Converter::findPeak(QVector<SensorData> &data){
             calcSpeed = ( qSqrt( qPow(heightDif, 2) + qPow(distance, 2 ) ) ) / timeToPoint;
         }
 
-        qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << calcSpeed << " heightDif " << heightDif << " distance: " << distance << "seconds" << timeToPoint;
+        //qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << calcSpeed << " heightDif " << heightDif << " distance: " << distance << "seconds" << timeToPoint;
 
         //add data to vector
         outlierSearchData.setSpeed(calcSpeed);
@@ -428,7 +369,7 @@ void Converter::findPeak(QVector<SensorData> &data){
             g = qFabs((mean - outlierSearchDataVector[i].getSpeed()) / stdev);
             outlierSearchDataVector[i].setG(g);
 
-            qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << outlierSearchDataVector[i].getSpeed() << " G: " << g;
+            //qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << outlierSearchDataVector[i].getSpeed() << " G: " << g;
 
             if(gCrit < g){
                 if(max == 0){
@@ -452,8 +393,8 @@ void Converter::findPeak(QVector<SensorData> &data){
         }
 
     } while (foundOutlier);
+}
 
-=======
 long Converter::getIdFromCzmlString(QString idString){
     QRegExp numberFilter("(-?\\d+(?:[\\.,]\\d+(?:e\\d+)?)?)");
     numberFilter.indexIn(idString);
@@ -462,7 +403,6 @@ long Converter::getIdFromCzmlString(QString idString){
         return -1;
 
     return idList.begin()->toLong();
->>>>>>> 55bb8e491d1713be2645af731f4359b507343589
 }
 
 //setter and getter

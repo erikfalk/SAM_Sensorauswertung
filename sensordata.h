@@ -16,7 +16,6 @@ private:
     double courseOverGround;
     double height;
     double sensorValue;
-    long id;
 
 public:
     SensorData(long id = 0, double h = 0.0, double v = 0.0) : id(id), height(h), sensorValue(v){}
@@ -28,7 +27,6 @@ public:
     void setCourseOverGround(double cog);
     void setHeight(double height);
     void setSensorValue(double sensorValue);
-    void setID(long id);
 
     long getId() const;
     QDateTime getDateTime() const;
@@ -37,12 +35,8 @@ public:
     double getCourseOverGround() const;
     double getHeight() const;
     double getSensorValue() const;
-<<<<<<< HEAD
-    long getID() const;
 
 
-=======
->>>>>>> 55bb8e491d1713be2645af731f4359b507343589
 };
 
 #endif // SENSORDATA_H

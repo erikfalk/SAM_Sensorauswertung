@@ -24,14 +24,14 @@ private:
     QDateTime _latestDateTime;
     double _maxSensorValue, _minSensorValue, _maxVehicleSpeed;
 
+    //returns true if GPS Dataset Checksum is correct
+    bool gpsChecksum(QString &dataline);
+
     //convertes a line from the csv file into the data object
     SensorData convertString (long id, QString &rawDataString);
 
     //find and removes peaks in data
     void findPeak(QVector<SensorData>& data);
-
-    //returns true if GPS Dataset Checksum is correct
-    bool gpsChecksum(QString &dataline);
 
     //returns the a color corrosponding to the value
     QColor mapValueToColor(double sensorValue);
