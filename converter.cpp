@@ -105,8 +105,12 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
     degrees.append(splittedData[3].at(0));
     degrees.append(splittedData[3].at(1));
     minutes = splittedData[3].remove(0,2);
+
     //calculate and set degrees
-    position.setLatitude(degrees.toDouble() + ((minutes.toDouble())/60));
+    if(splittedData.at(4) == "N")
+        position.setLatitude(degrees.toDouble() + ((minutes.toDouble())/60));
+    else
+        position.setLatitude(-(degrees.toDouble() + ((minutes.toDouble())/60)));
 
     //build lon
     //extract degrees and minutes
@@ -115,8 +119,12 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
     degrees.append(splittedData[5].at(1));
     degrees.append(splittedData[5].at(2));
     minutes = splittedData[5].remove(0,3);
+
     //calculate degrees
-    position.setLongitude(degrees.toDouble() + ((minutes.toDouble())/60));
+    if(splittedData.at(6) == "E")
+        position.setLongitude(degrees.toDouble() + ((minutes.toDouble())/60));
+    else
+        position.setLongitude(-(degrees.toDouble() + ((minutes.toDouble())/60)));
 
     sensorDataTemp.setPosition(position);
 
