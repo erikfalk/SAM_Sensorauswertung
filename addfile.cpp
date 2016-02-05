@@ -69,7 +69,7 @@ void AddFile::on_buttonBox_accepted()
 
 
 
-    if(myConverter->writeCzml(_filePath, myConverter->getIncompleteSensorData()) == -1){
+    if(myConverter->writeCzml(_filePath, myConverter->getCompleteSensorData()) == -1){
 
         QMessageBox::warning(this, "Error", "Could not write czml File!\n "
                                             "Please check if selected file ist correct.");

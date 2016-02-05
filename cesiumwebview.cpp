@@ -17,23 +17,23 @@ void CesiumWebView::dropEvent(QDropEvent *event){
   if (mimeData->hasUrls()) {
     QStringList pathList;
     QList<QUrl> urlList = mimeData->urls();
-    Converter czmlConverter;
-    QVector<SensorData> sensordata;
+    Converter converter;
 
     // extract the local paths of draged file
     for (int i = 0; i < urlList.size(); i++) {
         pathList.append(urlList.at(i).toLocalFile());
     }
-        czmlConverter.readCzml(pathList.at(0), sensordata);
-        drawDataToChart(sensordata);
+        converter.readCzml(pathList.at(0), converter.getCompleteSensorData());
+        emit sendSensorData(converter.getCompleteSensorData());
+        drawDataToChart(converter);
   }
 }
 
-void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
+void CesiumWebView::drawDataToChart(Converter &converter)
 {
 
     QCustomPlot *plot = this->parentWidget()->findChild<QCustomPlot *>("chartWidget");
-
+    QVector<SensorData> data = converter.getCompleteSensorData();
     QVector<QString> valuePosition;
     QVector<double> sensorValue, ticks;
 
@@ -50,7 +50,7 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     //prepare x-axis
     for(int i = 0; i < data.count(); i++){
        ticks << i;
-       valuePosition << QString::number(-i);
+       valuePosition << QString::number(data.at(i).getId());
     }
     plot->xAxis->setAutoTicks(false);
     plot->xAxis->setAutoTickLabels(false);
@@ -73,6 +73,8 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     gridPen.setStyle(Qt::DotLine);
     plot->yAxis->grid()->setSubGridPen(gridPen);
 
+    converter.findMinMaxSensorValue();
+    plot->yAxis->setRange(converter.getMinSensorValue(), converter.getMaxSensorValue());
     sensorValueBars->setData(ticks, sensorValue);
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     plot->replot();

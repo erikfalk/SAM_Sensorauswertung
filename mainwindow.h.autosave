@@ -30,9 +30,8 @@ private:
     Ui::MainWindow *ui;
     QFileSystemModel *filemodel;
     QVector<SensorData> _loadedSensorData;
-
-    void showLocationOnMap(QGeoCoordinate location);
-
+    
+    void showLocationOnMap(QString location);
 
 };
 

@@ -2,6 +2,8 @@
 #include <QWebView>
 #include <QDebug>
 #include <QUrl>
+#include <QWebElement>
+#include <QWebFrame>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -67,7 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
-    connect(ui->chartWidget, &QCustomPlot::plottableClick, this, &MainWindow::plotMousePress);
+    connect(ui->chartWidget, &QCustomPlot::plottableDoubleClick, this, &MainWindow::plotMousePress);
+    connect(ui->cesiumView, &CesiumWebView::sendSensorData, this, &MainWindow::onSensorDataRecieved);
 
 }
 
@@ -75,7 +78,6 @@ MainWindow::~MainWindow()
 {
     delete filemodel;
     delete ui;
-    delete sensorDataForView;
 }
 
 
@@ -85,20 +87,20 @@ void MainWindow::on_btn_addFile_pressed()
  addfile.exec();
 }
 
-void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event)
-{
-    if(event->button() == Qt::RightButton)
-    {
-        if(plottable)
+
+
+void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event) {
+
+    if(event->button() == Qt::LeftButton) {
+           if(plottable)
         {
             double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
             double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
 
             QCPBars *bar = qobject_cast<QCPBars*>(plottable);
 
-            double key = 0;
+            int key = 0;
             double value = 0;
-            QString xValue;
 
             bool ok = false;
             double m = std::numeric_limits<double>::max();
@@ -134,17 +136,62 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
                            "<th colspan=\"2\">%L1</th>"
                          "</tr>"
                          "<tr>"
-                           "<td>Key:</td>" "<td>%L2</td>"
+                           "<td>Bar Nr:</td>" "<td>%L2</td>"
                          "</tr>"
                          "<tr>"
                            "<td>Val:</td>" "<td>%L3</td>"
                          "</tr>"
+                         "<tr>"
+                            "<td>x-Axis Val:</td>" "<td>%L4</td>"
+                         "</tr>"
                        "</table>").
                        arg(bar->name().isEmpty() ? "..." : bar->name()).
                        arg(key).
-                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),
+                       arg(value).
+                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),                    
                        ui->chartWidget, ui->chartWidget->rect());
+                       showLocationOnMap(_loadedSensorData.at(key).getPosition());
+
             }
          }
     }
 }
+
+void MainWindow::showLocationOnMap(QGeoCoordinate location) {
+
+
+    QWebElement webelement;
+    QWebFrame* frame = ui->cesiumView->page()->currentFrame();
+
+    qDebug() << QString::number(location.longitude()) + ","
+                + QString::number(location.latitude());
+    webelement = frame->findFirstElement("input[type=search]");
+    do {
+        webelement.setFocus();
+    }
+    while(!webelement.hasFocus());
+
+    webelement.setAttribute("value", QString::number(location.longitude()) + ","
+                            + QString::number(location.latitude()));
+
+    ui->cesiumView->setFocus();
+
+    QKeyEvent *press = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press);
+
+    QKeyEvent *press2 = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press2);
+
+    QKeyEvent *press3 = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press3);
+
+}
+
+
+void MainWindow::onSensorDataRecieved(QVector<SensorData> &data){
+    if(!_loadedSensorData.isEmpty())
+       _loadedSensorData.clear();
+
+    _loadedSensorData = data;
+}
+
