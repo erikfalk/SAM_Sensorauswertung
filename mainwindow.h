@@ -31,6 +31,8 @@ private:
     QFileSystemModel *filemodel;
     QVector<SensorData> _loadedSensorData;
 
+    void showLocationOnMap(QGeoCoordinate location);
+
 
 };
 

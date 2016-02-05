@@ -2,6 +2,8 @@
 #include <QWebView>
 #include <QDebug>
 #include <QUrl>
+#include <QWebElement>
+#include <QWebFrame>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -67,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
-    connect(ui->chartWidget, &QCustomPlot::plottableClick, this, &MainWindow::plotMousePress);
+    connect(ui->chartWidget, &QCustomPlot::plottableDoubleClick, this, &MainWindow::plotMousePress);
     connect(ui->cesiumView, &CesiumWebView::sendSensorData, this, &MainWindow::onSensorDataRecieved);
 
 }
@@ -85,18 +87,19 @@ void MainWindow::on_btn_addFile_pressed()
  addfile.exec();
 }
 
-void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event)
-{
-    if(event->button() == Qt::LeftButton)
-    {
-        if(plottable)
+
+
+void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event) {
+
+    if(event->button() == Qt::LeftButton) {
+           if(plottable)
         {
             double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
             double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
 
             QCPBars *bar = qobject_cast<QCPBars*>(plottable);
 
-            double key = 0;
+            int key = 0;
             double value = 0;
 
             bool ok = false;
@@ -156,13 +159,32 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
 
 void MainWindow::showLocationOnMap(QGeoCoordinate location) {
 
+
     QWebElement webelement;
-    QWebFrame* frame = ui->webView->page()->currentFrame();
+    QWebFrame* frame = ui->cesiumView->page()->currentFrame();
 
-
+    qDebug() << QString::number(location.longitude()) + ","
+                + QString::number(location.latitude());
     webelement = frame->findFirstElement("input[type=search]");
-    webelement.setFocus();
-    webelement.setAttribute("value", location.toString());
+    do {
+        webelement.setFocus();
+    }
+    while(!webelement.hasFocus());
+
+    webelement.setAttribute("value", QString::number(location.longitude()) + ","
+                            + QString::number(location.latitude()));
+
+    ui->cesiumView->setFocus();
+
+    QKeyEvent *press = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press);
+
+    QKeyEvent *press2 = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press2);
+
+    QKeyEvent *press3 = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
+    qApp->postEvent(ui->cesiumView, press3);
+
 }
 
 

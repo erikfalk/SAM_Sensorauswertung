@@ -18,7 +18,7 @@ private:
     double sensorValue;
 
 public:
-    SensorData(long id = 0, double h = 0.0) : id(id), height(h){}
+    SensorData(long id = 0, double h = 0.0, double v = 0.0) : id(id), height(h), sensorValue(v){}
 
     void setId(long id);
     void setDateTime(QDateTime dateTime);

@@ -27,10 +27,11 @@ int Converter::extractSensorData(QString filename){
     while(!rawData.atEnd()){
 
        QString line = rawData.readLine();
+
         lineId++;
        //check for complete dataset
        //if(gpsChecksum(line))
-           _completeSensorData.append(convertString(lineId, line));
+       _completeSensorData.append(convertString(lineId, line));
 
      }
 
@@ -38,7 +39,7 @@ int Converter::extractSensorData(QString filename){
     rawDataFile.close();
 
     //find and remove peaks
-    findPeak(_completeSensorData);
+    //findPeak(_completeSensorData);
 
     return 0;
 }
@@ -112,18 +113,17 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
     sensorDataTemp.setPosition(position);
 
     //extract time
-    QTime time(QString(QString(splittedData[1].at(0)) + QString(splittedData[1].at(1))).toInt(),
-               QString(QString(splittedData[1].at(2)) + QString(splittedData[1].at(3))).toInt(),
-               QString(QString(splittedData[1].at(4)) + QString(splittedData[1].at(5))).toInt());
+    QTime time;
+    if((splittedData.at(1)).count() > 6)
+         time = QTime::fromString(splittedData.at(1), "hhmmss.zzz");
+    else
+        time = QTime::fromString(splittedData.at(1), "hhmmss");
 
     //extract date
-    QDate date(2000 + QString(QString(splittedData[9].at(4)) + QString(splittedData[9].at(5))).toInt(),
-               QString(QString(splittedData[9].at(2)) + QString(splittedData[9].at(3))).toInt(),
-               QString(QString(splittedData[9].at(0)) + QString(splittedData[9].at(1))).toInt());
-
+    QDate date = QDate::fromString(splittedData.at(9), "ddMMyy");
+    date = date.addYears(100);
 
     sensorDataTemp.setDateTime(QDateTime(date, time));
-
 
     //extract and set speed and course over ground
     sensorDataTemp.setSpeedOverGround(splittedData[8].toDouble());
@@ -143,11 +143,11 @@ SensorData Converter::convertString(long dataId, QString &rawDataString){
 
         if(sensorDataTemp.getSensorValue() < _minSensorValue)
             _minSensorValue = sensorDataTemp.getSensorValue();
-
-        //extract latest date and time
-        if(sensorDataTemp.getDateTime() > _latestDateTime)
-            _latestDateTime = sensorDataTemp.getDateTime();
     }
+
+    //extract latest date and time
+    if(sensorDataTemp.getDateTime() > _latestDateTime)
+        _latestDateTime = sensorDataTemp.getDateTime();
 
     return sensorDataTemp;
 }
@@ -175,7 +175,7 @@ void Converter::findPeak(QVector<SensorData> &data){
 //creates a czml file
 int Converter::writeCzml (QDir filePath, const QVector<SensorData>& data){
     QDateTime time;
-    QString fileName = "messung" + time.currentDateTime().toString("ss_ddMMyyyy") + ".czml";
+    QString fileName = time.currentDateTime().toString("ss_ddMMyyyy") + ".czml";
 
     QFile czmlFile(filePath.absolutePath() + "/" + fileName);
     
