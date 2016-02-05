@@ -269,44 +269,47 @@ bool Converter::gpsChecksum(QString &dataline){
 //find and remove peaks
 void Converter::findPeak(QVector<SensorData> &data){
 
+    long int millisecsToPoint;
     long degreeOfFreedom, toDeleteVariable = -1, outlierDataCount;
     double timeToPoint, distance, calcSpeed, heightDif, max = 0, tCrit, gCrit, mean, sum = 0, stdev, numerator = 0, sigValue, g;
     bool foundOutlier;
     Grubbs outlierSearchData;
     QVector<Grubbs> outlierSearchDataVector;
 
-    do{
-        //calculate Speed between two points and saved it in vektor
-        qDebug() << "Geschwindigkeitsberechnung";
-        for(int i=0; i < data.count()-1; i++){
+    //read gpsdata and calculate speed between two points and save it in vector
+    qDebug() << "Geschwindigkeitsberechnung";
+    for(int i=0; i < data.count()-1; i++){
 
-            distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
-            heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
-            timeToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
+        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
+        heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
+        millisecsToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
 
-            //change duration in seconds
-            timeToPoint * 1000;
+        qDebug() << "milliseconds: " << millisecsToPoint;
 
-            //speed in m/s
-            if(timeToPoint == 0.0){
-                calcSpeed = 0.0;
-            } else {
-                calcSpeed = ( qSqrt( qPow(heightDif, 2) + qPow(distance, 2 ) ) ) / timeToPoint;
-            }
+        //change duration in seconds
+        timeToPoint = millisecsToPoint / 1000.0;
 
-            if(i < 35){
-                qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << calcSpeed << " heightDif " << heightDif << " distance: " << distance << "seconds" << tempTime;
-            }
-
-            //calculate sum for mean
-            sum += calcSpeed;
-
-            //add data to vector
-            outlierSearchData.setSpeed(calcSpeed);
-            outlierSearchDataVector.append(outlierSearchData);
+        //speed in m/s
+        if(timeToPoint == 0.0){
+            calcSpeed = 0.0;
+        } else {
+            calcSpeed = ( qSqrt( qPow(heightDif, 2) + qPow(distance, 2 ) ) ) / timeToPoint;
         }
 
+        qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << calcSpeed << " heightDif " << heightDif << " distance: " << distance << "seconds" << timeToPoint;
+
+        //add data to vector
+        outlierSearchData.setSpeed(calcSpeed);
+        outlierSearchDataVector.append(outlierSearchData);
+    }
+
+    do{
         outlierDataCount = outlierSearchDataVector.count();
+
+        //calculate sum of speed from all dataset
+        for(int i=0; i < outlierDataCount-1; i++){
+            sum += outlierSearchDataVector[i].getSpeed();
+        }
 
         //calculate average over all values
         mean = sum / outlierDataCount;
@@ -343,9 +346,7 @@ void Converter::findPeak(QVector<SensorData> &data){
             g = qFabs((mean - outlierSearchDataVector[i].getSpeed()) / stdev);
             outlierSearchDataVector[i].setG(g);
 
-            if(i < 35){
-                qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << outlierSearchDataVector[i].getSpeed() << " G: " << g;
-            }
+            qDebug() << "Daten ID: " << i << " Geschwindigkeit: " << outlierSearchDataVector[i].getSpeed() << " G: " << g;
 
             if(gCrit < g){
                 if(max == 0){
@@ -358,12 +359,14 @@ void Converter::findPeak(QVector<SensorData> &data){
             }
         }
 
+        foundOutlier = false;
         // delete the dataset with the highest G value over gCrit
         if(toDeleteVariable != -1){
             qDebug() << "Daten mit ID: " << toDeleteVariable << "wurde geloescht";
             outlierSearchDataVector.remove(toDeleteVariable);
             data.remove(toDeleteVariable);
             foundOutlier = true;
+            toDeleteVariable = -1;
         }
 
     } while (foundOutlier);
