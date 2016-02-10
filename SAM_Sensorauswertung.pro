@@ -23,10 +23,12 @@ SOURCES +=  main.cpp\
     sensordata.cpp \
     grubbs.cpp \
     gpschecksum.cpp \
-    test.cpp \
     specialfunctions.cpp \
     alglibinternal.cpp \
-    ap.cpp
+    ap.cpp \
+    reader.cpp \
+    csvreader.cpp \
+    cleaner.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -39,7 +41,10 @@ HEADERS  += mainwindow.h \
     specialfunctions.h \
     stdafx.h \
     alglibinternal.h \
-    ap.h
+    ap.h \
+    reader.h \
+    csvreader.h \
+    cleaner.h
 
     gpschecksum.h
 

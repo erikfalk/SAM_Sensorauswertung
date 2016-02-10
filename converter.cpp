@@ -36,7 +36,7 @@ int Converter::extractSensorData(QString filename){
        if(line.contains("$GPRMC")) {
         lineId++;
         //check for complete dataset
-        if(gpsChecksum(line))
+        //if(gpsChecksum(line))
             _completeSensorData.append(convertString(lineId, line));
        }
      }

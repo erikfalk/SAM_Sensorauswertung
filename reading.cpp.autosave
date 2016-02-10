@@ -1,0 +1,87 @@
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDir>
+#include <QTextStream>
+
+#include "reading.h"
+
+Reading::Reading()
+{
+    
+}
+
+int Reading::readFromCSV(QString filename)
+{
+    QFile rawDataFile(filename);
+    QTextStream rawData(&rawDataFile);
+
+    //open file for reading
+    if(!rawDataFile.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "could not open file for reading";
+        return -1;
+    }
+
+    //add data to vector
+    long lineId = 0;
+    while(!rawData.atEnd()){
+
+       QString line = rawData.readLine();
+
+       if(line.contains("$GPRMC")) {
+        lineId++;
+        //check for complete dataset
+        if(gpsChecksum(line))
+            _completeSensorData.append(convertString(lineId, line));
+       }
+     }
+
+    rawDataFile.flush();
+    rawDataFile.close();
+
+    //find and remove peaks
+
+    findPeak(_completeSensorData);
+
+
+    return 0;
+}
+
+int Reading::readFromCzml(QString filename, QVector<SensorData> &readSensorData)
+{
+    
+}
+
+bool Reading::gpsChecksum(QString &dataline)
+{
+    QByteArray datalineBytes = dataline.toUtf8();
+    QString recieved_checksum;
+    int calc_checksum = 0x00;
+
+    for(int i = 0; i < datalineBytes.length(); i++){
+
+            switch(datalineBytes[i]){
+
+                case '$': break;
+
+                case '*': {
+                    //extract recieved checksum
+                    recieved_checksum.append(datalineBytes.at(i+1));
+                    recieved_checksum.append(datalineBytes.at(i+2));
+                    i = datalineBytes.length();
+                    break;
+                }
+
+                default: {
+                    calc_checksum ^= datalineBytes[i];
+                }
+            }
+    }
+
+    bool ok;
+    if(calc_checksum == recieved_checksum.toInt(&ok,16))
+        return true;
+
+    return false;
+}
+
