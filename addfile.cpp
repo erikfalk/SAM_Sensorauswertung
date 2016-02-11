@@ -60,14 +60,14 @@ void AddFile::onSrc_FileSelected(const QString &path)
 
 void AddFile::on_buttonBox_accepted()
 {
-    CsvReader* fileReader = new CsvReader;
-    Cleaner* cleaner = new Cleaner;
+    QVector<SensorData> sensordata;
+    CsvReader fileReader;
+    Cleaner cleaner;
+    Converter converter;
 
-    connect(fileReader, &CsvReader::sendSensorData, cleaner, &Cleaner::onSensorDatarecieved);
+    sensordata = fileReader.read(ui->source_TextEdit->toPlainText());
 
-    fileReader->read(ui->source_TextEdit->toPlainText());
-
-    cleaner->grubbsTest();
+    cleaner.grubbsTest(sensordata);
 
 
 

@@ -14,9 +14,8 @@ class CsvReader : public Reader
 
 private:
 
-    Q_OBJECT
-
     bool gpsChecksum(QString &dataline);
+
     //convertes a line from the csv file into the data object
     SensorData writeToSensorData (long id, QString &rawDataString);
 

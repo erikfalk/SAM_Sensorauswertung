@@ -33,8 +33,6 @@ void CsvReader::read(QString filename)
 
     rawDataFile.flush();
     rawDataFile.close();
-
-    emit sendSensorData(_readData);
 }
 
 bool CsvReader::gpsChecksum(QString &dataline)

@@ -1,13 +1,13 @@
-#ifndef GRUBBS_H
-#define GRUBBS_H
+#ifndef GRUBBSDATA_H
+#define GRUBBSDATA_H
 
 
-class Grubbs
+class GrubbsData
 {
     long _id, _dataID;
     double _speed, _G;
 public:
-    Grubbs();
+    GrubbsData();
 
     void setSpeed(double speed);
     void setG(double g);
@@ -18,4 +18,4 @@ public:
 
 };
 
-#endif // GRUBBS_H
+#endif // GRUBBSDATA_H

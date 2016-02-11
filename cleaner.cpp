@@ -5,7 +5,7 @@ Cleaner::Cleaner()
 
 }
 
-void Cleaner::grubbsTest()
+void Cleaner::grubbsTest(QVector<SensorData>& data)
 {
     //Prüfen ob leer noch hinzufügen
 
@@ -18,11 +18,11 @@ void Cleaner::grubbsTest()
 
     //read gpsdata and calculate speed between two points and save it in vector
     qDebug() << "Geschwindigkeitsberechnung";
-    for(int i=0; i < _dataToClean.count()-1; i++){
+    for(int i=0; i < data.count()-1; i++){
 
-        distance = _dataToClean[i].getPosition().distanceTo(_dataToClean[i+1].getPosition());
-        heightDif = qFabs(_dataToClean[i+1].getHeight() - _dataToClean[i].getHeight());
-        millisecsToPoint = _dataToClean[i].getDateTime().msecsTo(_dataToClean[i+1].getDateTime());
+        distance = data[i].getPosition().distanceTo(data[i+1].getPosition());
+        heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
+        millisecsToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
 
         //qDebug() << "milliseconds: " << millisecsToPoint;
 
@@ -104,17 +104,12 @@ void Cleaner::grubbsTest()
         if(toDeleteVariable != -1){
             qDebug() << "Daten mit ID: " << toDeleteVariable << "wurde geloescht";
             outlierSearchDataVector.remove(toDeleteVariable);
-            _dataToClean.remove(toDeleteVariable);
+            data.remove(toDeleteVariable);
             foundOutlier = true;
             toDeleteVariable = -1;
         }
 
     } while (foundOutlier);
 
-}
-
-void Cleaner::onSensorDatarecieved(QVector<SensorData> &data)
-{
-    _dataToClean = data;
 }
 

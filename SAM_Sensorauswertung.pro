@@ -21,14 +21,15 @@ SOURCES +=  main.cpp\
             qcustomplot.cpp \
     cesiumwebview.cpp \
     sensordata.cpp \
-    grubbs.cpp \
     gpschecksum.cpp \
     specialfunctions.cpp \
     alglibinternal.cpp \
     ap.cpp \
     reader.cpp \
     csvreader.cpp \
-    cleaner.cpp
+    cleaner.cpp \
+    grubbsdata.cpp \
+    czmlreader.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -37,14 +38,15 @@ HEADERS  += mainwindow.h \
             qcustomplot.h \
     cesiumwebview.h \
     sensordata.h \
-    grubbs.h \
     specialfunctions.h \
     stdafx.h \
     alglibinternal.h \
     ap.h \
     reader.h \
     csvreader.h \
-    cleaner.h
+    cleaner.h \
+    grubbsdata.h \
+    czmlreader.h
 
     gpschecksum.h
 

@@ -5,25 +5,18 @@
 #include <QObject>
 #include "sensordata.h"
 
-class Reader : public QObject
+class Reader
 {
 
 private:
-
-    Q_OBJECT
-
-    QVector<SensorData> _readData;
 
     virtual SensorData writeToSensorData(long id, QString &rawDataString) = 0;
 
 public:
     Reader();
-    virtual void read(QString filename) = 0;
-    int readFromCzml(QString filename, QVector<SensorData>& readSensorData);
+    ~Reader();
+    virtual void read() = 0;
 
-
-signals:
-    void sendSensorData(QVector<SensorData> &data);
 };
 
 #endif // READER_H

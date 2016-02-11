@@ -2,24 +2,19 @@
 #define CLEANER_H
 #include <QVector>
 #include <QObject>
+#include <QtMath>
+
 #include "sensordata.h"
+#include "grubbsdata.h"
 
-class Cleaner : public QObject
+class Cleaner
 {
-
-private:
-    Q_OBJECT
-
-    QVector<SensorData> _dataToClean;
-
 public:
     Cleaner();
+    ~Cleaner();
 
     //find and removes outlier in data
-    void grubbsTest();
-
-public slots:
-    void onSensorDatarecieved(QVector<SensorData>& data);
+    void grubbsTest(QVector<SensorData>& data);
 };
 
 #endif // CLEANER_H
