@@ -8,15 +8,15 @@
 class Reader
 {
 
-private:
+protected:
 
-    virtual SensorData writeToSensorData() = 0;
+    virtual SensorData writeToSensorData();
 
 public:
 
      Reader();
     ~Reader();
-    virtual void read() = 0;
+    virtual QVector<SensorData> read(QString filename) = 0;
 
 };
 

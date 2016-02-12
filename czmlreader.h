@@ -18,8 +18,10 @@ class CzmlReader : public Reader
 private:
     long getIdFromCzmlString(QString idString);
 
+protected:
+
     //convertes a line from the czml file into the data object
-    SensorData writeToSensorData (QJsonObject& data);
+    virtual SensorData writeToSensorData (QJsonObject& data);
 
 public:
     CzmlReader();

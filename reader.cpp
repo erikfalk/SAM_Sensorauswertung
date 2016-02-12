@@ -5,3 +5,8 @@ Reader::Reader()
 
 }
 
+Reader::~Reader()
+{
+
+}
+

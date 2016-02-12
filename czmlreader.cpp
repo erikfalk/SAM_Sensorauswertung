@@ -53,3 +53,13 @@ SensorData CzmlReader::writeToSensorData(QJsonObject& data)
 
     return sensordata;
 }
+
+long CzmlReader::getIdFromCzmlString(QString idString){
+    QRegExp numberFilter("(-?\\d+(?:[\\.,]\\d+(?:e\\d+)?)?)");
+    numberFilter.indexIn(idString);
+    QStringList idList = numberFilter.capturedTexts();
+    if(idList.isEmpty())
+        return -1;
+
+    return idList.begin()->toLong();
+}
