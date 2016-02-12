@@ -13,8 +13,8 @@ void Cleaner::grubbsTest(QVector<SensorData>& data)
     long degreeOfFreedom, toDeleteVariable = -1, outlierDataCount;
     double timeToPoint, distance, calcSpeed, heightDif, max = 0, tCrit, gCrit, mean, sum = 0, stdev, numerator = 0, sigValue, g;
     bool foundOutlier;
-    Grubbs outlierSearchData;
-    QVector<Grubbs> outlierSearchDataVector;
+    GrubbsData outlierSearchData;
+    QVector<GrubbsData> outlierSearchDataVector;
 
     //read gpsdata and calculate speed between two points and save it in vector
     qDebug() << "Geschwindigkeitsberechnung";

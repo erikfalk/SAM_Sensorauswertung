@@ -2,6 +2,13 @@
 #define CZMLREADER_H
 
 #include <QString>
+#include <QMessageBox>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QVector>
+#include <QDebug>
 
 #include "sensordata.h"
 #include "reader.h"
@@ -12,12 +19,11 @@ private:
     long getIdFromCzmlString(QString idString);
 
     //convertes a line from the czml file into the data object
-    SensorData writeToSensorData (long id, QString &rawDataString);
+    SensorData writeToSensorData (QJsonObject& data);
 
 public:
     CzmlReader();
-    void read(QString filename, QVector<SensorData>& data);
-    //void read(QString filename, QVector<SensorData>& data);
+    virtual QVector<SensorData> read(QString filename);
 
 };
 

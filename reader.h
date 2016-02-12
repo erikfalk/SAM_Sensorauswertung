@@ -10,10 +10,11 @@ class Reader
 
 private:
 
-    virtual SensorData writeToSensorData(long id, QString &rawDataString) = 0;
+    virtual SensorData writeToSensorData() = 0;
 
 public:
-    Reader();
+
+     Reader();
     ~Reader();
     virtual void read() = 0;
 

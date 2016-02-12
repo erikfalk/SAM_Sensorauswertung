@@ -24,15 +24,6 @@ private:
     QDateTime _latestDateTime;
     double _maxSensorValue, _minSensorValue, _maxVehicleSpeed;
 
-    //returns true if GPS Dataset Checksum is correct
-    bool gpsChecksum(QString &dataline);
-
-    //convertes a line from the csv file into the data object
-    SensorData convertString (long id, QString &rawDataString);
-
-    //find and removes peaks in data
-    void findPeak(QVector<SensorData>& data);
-
     //returns the a color corrosponding to the value
     QColor mapValueToColor(double sensorValue);
 
@@ -41,9 +32,6 @@ public:
     Converter() : _maxSensorValue(std::numeric_limits<double>::min()), _minSensorValue(std::numeric_limits<double>::max()),
         _maxVehicleSpeed(20) {}
     ~Converter();
-
-    //extract specific Data from a GPS rawdata csv file
-    int extractSensorData(QString filename);
 
     //creates a czml file from data stored in the vector
     int writeCzml(QDir filePath, const QVector<SensorData>& data);

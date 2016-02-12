@@ -6,6 +6,8 @@
 #include "mainwindow.h"
 #include "QStandardPaths"
 #include "cleaner.h"
+#include "reader.h"
+#include "czmlreader.h"
 
 AddFile::AddFile(QDir filePath, QWidget *parent) :
     QDialog(parent),
@@ -61,13 +63,20 @@ void AddFile::onSrc_FileSelected(const QString &path)
 void AddFile::on_buttonBox_accepted()
 {
     QVector<SensorData> sensordata;
-    CsvReader fileReader;
-    Cleaner cleaner;
-    Converter converter;
+    //CsvReader fileReader;
+    //Cleaner cleaner;
+    //Converter converter;
+    CzmlReader czmlReader;
 
-    sensordata = fileReader.read(ui->source_TextEdit->toPlainText());
+    sensordata = czmlReader.read(ui->source_TextEdit->toPlainText());
 
-    cleaner.grubbsTest(sensordata);
+    for(int i = 0; i < sensordata.size(); i++){
+        qDebug() << sensordata.at(i).getPosition();
+    }
+
+    //cleaner.grubbsTest(sensordata);
+
+    //converter.
 
 
 

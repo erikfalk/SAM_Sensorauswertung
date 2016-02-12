@@ -3,9 +3,11 @@
 #include <QVector>
 #include <QObject>
 #include <QtMath>
+#include <QDebug>
 
 #include "sensordata.h"
 #include "grubbsdata.h"
+#include "specialfunctions.h"
 
 class Cleaner
 {
