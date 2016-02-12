@@ -26,7 +26,8 @@ QVector<SensorData> CzmlReader::read(QString filename)
     QJsonArray czmlArray = czmlDoc.array();
 
     for(int i = 1; i < czmlArray.size(); i++){
-        sensordatas.append(writeToSensorData(czmlArray[i].toObject()));
+        QJsonObject czmlObject = czmlArray.at(i);
+        sensordatas.append(writeToSensorData(czmlObject));
     }
 
     return sensordatas;
