@@ -1,8 +1,4 @@
-#include <QDebug>
-#include <QMimeData>
-
 #include "cesiumwebview.h"
-
 
 CesiumWebView::CesiumWebView(QWidget *parent) : QWebView(parent) {
 
@@ -17,23 +13,22 @@ void CesiumWebView::dropEvent(QDropEvent *event){
   if (mimeData->hasUrls()) {
     QStringList pathList;
     QList<QUrl> urlList = mimeData->urls();
-    Converter converter;
+    CzmlReader czmlReader;
 
     // extract the local paths of draged file
     for (int i = 0; i < urlList.size(); i++) {
         pathList.append(urlList.at(i).toLocalFile());
     }
-        converter.readCzml(pathList.at(0), converter.getCompleteSensorData());
-        emit sendSensorData(converter.getCompleteSensorData());
-        drawDataToChart(converter);
+        QVector<SensorData> sensordatas = czmlReader.read(pathList.at(0));
+        emit sendSensorData(sensordatas);
+        drawDataToChart(sensordatas);
   }
 }
 
-void CesiumWebView::drawDataToChart(Converter &converter)
+void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
 {
 
     QCustomPlot *plot = this->parentWidget()->findChild<QCustomPlot *>("chartWidget");
-    QVector<SensorData> data = converter.getCompleteSensorData();
     QVector<QString> valuePosition;
     QVector<double> sensorValue, ticks;
 
@@ -73,7 +68,8 @@ void CesiumWebView::drawDataToChart(Converter &converter)
     gridPen.setStyle(Qt::DotLine);
     plot->yAxis->grid()->setSubGridPen(gridPen);
 
-    converter.findMinMaxSensorValue();
+    CzmlConverter converter;
+    converter.findExtrema(data);
     plot->yAxis->setRange(converter.getMinSensorValue(), converter.getMaxSensorValue());
     sensorValueBars->setData(ticks, sensorValue);
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);

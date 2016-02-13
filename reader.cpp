@@ -5,6 +5,11 @@ Reader::Reader()
 
 }
 
+SensorData Reader::writeToSensorData()
+{
+
+}
+
 Reader::~Reader()
 {
 

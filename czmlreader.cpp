@@ -26,7 +26,7 @@ QVector<SensorData> CzmlReader::read(QString filename)
     QJsonArray czmlArray = czmlDoc.array();
 
     for(int i = 1; i < czmlArray.size(); i++){
-        QJsonObject czmlObject = czmlArray.at(i);
+        QJsonObject czmlObject = czmlArray.at(i).toObject();
         sensordatas.append(writeToSensorData(czmlObject));
     }
 
@@ -55,7 +55,8 @@ SensorData CzmlReader::writeToSensorData(QJsonObject& data)
     return sensordata;
 }
 
-long CzmlReader::getIdFromCzmlString(QString idString){
+long CzmlReader::getIdFromCzmlString(QString idString)
+{
     QRegExp numberFilter("(-?\\d+(?:[\\.,]\\d+(?:e\\d+)?)?)");
     numberFilter.indexIn(idString);
     QStringList idList = numberFilter.capturedTexts();

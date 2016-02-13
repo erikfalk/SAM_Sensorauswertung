@@ -4,7 +4,8 @@
 #include <QDialog>
 #include <QDir>
 #include <QString>
-#include "converter.h"
+
+#include "czmlconverter.h"
 
 namespace Ui {
 class AddFile;

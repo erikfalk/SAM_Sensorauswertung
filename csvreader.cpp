@@ -27,7 +27,7 @@ QVector<SensorData> CsvReader::read(QString filename)
        if(line.contains("$GPRMC")) {
         lineId++;
         //check for complete dataset
-        if(gpsChecksum(line))
+        //if(gpsChecksum(line))
             sensordatas.append(writeToSensorData(lineId, line));
        }
      }
@@ -36,39 +36,6 @@ QVector<SensorData> CsvReader::read(QString filename)
     rawDataFile.close();
 
     return sensordatas;
-}
-
-bool CsvReader::gpsChecksum(QString &dataline)
-{
-    QByteArray datalineBytes = dataline.toUtf8();
-    QString recieved_checksum;
-    int calc_checksum = 0x00;
-
-    for(int i = 0; i < datalineBytes.length(); i++){
-
-            switch(datalineBytes[i]){
-
-                case '$': break;
-
-                case '*': {
-                    //extract recieved checksum
-                    recieved_checksum.append(datalineBytes.at(i+1));
-                    recieved_checksum.append(datalineBytes.at(i+2));
-                    i = datalineBytes.length();
-                    break;
-                }
-
-                default: {
-                    calc_checksum ^= datalineBytes[i];
-                }
-            }
-    }
-
-    bool ok;
-    if(calc_checksum == recieved_checksum.toInt(&ok,16))
-        return true;
-
-    return false;
 }
 
 SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
@@ -137,19 +104,45 @@ SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
 
         //extract sensor value
         sensorDataTemp.setSensorValue(splittedData[14].toDouble());
-
-        //extract minimum and maximum sensor value
-        if(sensorDataTemp.getSensorValue() > _maxSensorValue)
-            _maxSensorValue = sensorDataTemp.getSensorValue();
-
-        if(sensorDataTemp.getSensorValue() < _minSensorValue)
-            _minSensorValue = sensorDataTemp.getSensorValue();
     }
 
     //extract latest date and time
-    if(sensorDataTemp.getDateTime() > _latestDateTime)
-        _latestDateTime = sensorDataTemp.getDateTime();
 
     return sensorDataTemp;
 }
+
+bool CsvReader::gpsChecksum(QString &dataline)
+{
+    QByteArray datalineBytes = dataline.toUtf8();
+    QString recieved_checksum;
+    int calc_checksum = 0x00;
+
+    for(int i = 0; i < datalineBytes.length(); i++){
+
+            switch(datalineBytes[i]){
+
+                case '$': break;
+
+                case '*': {
+                    //extract recieved checksum
+                    recieved_checksum.append(datalineBytes.at(i+1));
+                    recieved_checksum.append(datalineBytes.at(i+2));
+                    i = datalineBytes.length();
+                    break;
+                }
+
+                default: {
+                    calc_checksum ^= datalineBytes[i];
+                }
+            }
+    }
+
+    bool ok;
+    if(calc_checksum == recieved_checksum.toInt(&ok,16))
+        return true;
+
+    return false;
+}
+
+
 

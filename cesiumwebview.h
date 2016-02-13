@@ -4,9 +4,13 @@
 #include <QWidget>
 #include <QWebView>
 #include <QDropEvent>
+#include <QDebug>
+#include <QMimeData>
 
-#include "converter.h"
+#include "czmlreader.h"
+#include "czmlconverter.h"
 #include "qcustomplot.h"
+#include "sensordata.h"
 
 namespace Ui {
 class CesiumWebView;
@@ -24,7 +28,7 @@ signals:
 
 private:
     void dropEvent(QDropEvent *event);
-    void drawDataToChart(Converter &data);
+    void drawDataToChart(QVector<SensorData> &data);
 };
 
 #endif // CESIUMWEBVIEW_H

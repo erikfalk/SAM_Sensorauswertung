@@ -29,7 +29,8 @@ SOURCES +=  main.cpp\
     csvreader.cpp \
     cleaner.cpp \
     grubbsdata.cpp \
-    czmlreader.cpp
+    czmlreader.cpp \
+    czmlconverter.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     csvreader.h \
     cleaner.h \
     grubbsdata.h \
-    czmlreader.h
+    czmlreader.h \
+    czmlconverter.h
 
     gpschecksum.h
 
