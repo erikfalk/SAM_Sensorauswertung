@@ -25,6 +25,7 @@ void CsvReader::read(QString filename, QVector<SensorData>& data)
 
        if(line.contains("$GPRMC")) {
         lineId++;
+
         //check for complete dataset
         //if(gpsChecksum(line))
             data.append(writeToSensorData(lineId, line));

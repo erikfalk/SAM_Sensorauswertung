@@ -37,7 +37,6 @@ HEADERS  += mainwindow.h \
             addfile.h \
             filebrowser.h \
             qcustomplot.h \
-    cesiumwebview.h \
     sensordata.h \
     specialfunctions.h \
     stdafx.h \
@@ -48,7 +47,8 @@ HEADERS  += mainwindow.h \
     cleaner.h \
     grubbsdata.h \
     czmlreader.h \
-    czmlconverter.h
+    czmlconverter.h \
+    cesiumwebview.h
 
     gpschecksum.h
 

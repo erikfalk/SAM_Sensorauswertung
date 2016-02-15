@@ -54,7 +54,7 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
 
         czmlData << " \"position\":{\n"
                     "  \"cartographicDegrees\":[" << data[i].getPosition().longitude() << ", "
-                                             << data[i].getPosition().latitude() << ", 0]\n"
+                                             << data[i].getPosition().latitude() << ", " <<  data[i].getHeight() << "]\n"
                     " },\n";
 
 
@@ -105,12 +105,16 @@ void CzmlConverter::findExtrema(const QVector<SensorData> &data)
 
 QColor CzmlConverter::mapValueToColor(double sensorValue)
 {
-    //calculate hue
-    double hue = (_maxSensorValue-sensorValue)/((_maxSensorValue-_minSensorValue)*3);
+    QColor color;
+    if(sensorValue != std::numeric_limits<double>::min()){
+        //calculate hue
+        double hue = (_maxSensorValue-sensorValue)/((_maxSensorValue-_minSensorValue)*3);
 
-    //calculate corrosponding color
-    QColor color = QColor::fromHsvF(hue, 1.0, 1.0);
-
+        //calculate corrosponding color
+        color = QColor::fromHsvF(hue, 1.0, 1.0);
+    } else {
+        color = QColor::fromRgb(127, 255, 240);
+    }
     return color.toRgb();
 }
 

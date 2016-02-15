@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDateTime>
+#include <limits>
 
 #include "reader.h"
 

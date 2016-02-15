@@ -7,6 +7,7 @@
 
 #include "sensordata.h"
 
+
 class Reader
 {
 
