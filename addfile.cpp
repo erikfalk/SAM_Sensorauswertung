@@ -1,12 +1,5 @@
-#include <QMessageBox>
 #include "addfile.h"
-#include "ui_addfile.h"
-#include "filebrowser.h"
-#include "csvreader.h"
-#include "mainwindow.h"
-#include "QStandardPaths"
-#include "cleaner.h"
-#include "czmlreader.h"
+
 
 AddFile::AddFile(QDir filePath, QWidget *parent) :
     QDialog(parent),
@@ -61,36 +54,17 @@ void AddFile::onSrc_FileSelected(const QString &path)
 
 void AddFile::on_buttonBox_accepted()
 {
-    QVector<SensorData> sensordatas;
+    QVector<SensorData> sensordata;
     CsvReader fileReader;
-    //Cleaner cleaner;
+    Cleaner cleaner;
     CzmlConverter czmlConverter;
 
-    sensordatas = fileReader.read(ui->source_TextEdit->toPlainText());
+    fileReader.read(ui->source_TextEdit->toPlainText(), sensordata);
 
+    cleaner.grubbsTest(sensordata);
 
-    czmlConverter.convertToFile(_filePath, sensordatas);
+    czmlConverter.convertToFile(_filePath, sensordata);
 
-    //cleaner.grubbsTest(sensordata);
-
-    //converter.
-
-
-
-
-
-
-    //Converter aufrufen
-    /*
-    if(myConverter->writeCzml(_filePath, myConverter->getCompleteSensorData()) == -1){
-
-        QMessageBox::warning(this, "Error", "Could not write czml File!\n "
-                                            "Please check if selected file ist correct.");
-    }else{
-        QMessageBox::information(this, "Success", "Converting successful.");
-
-    }
-    */
 
 }
 

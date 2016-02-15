@@ -6,9 +6,8 @@ CsvReader::CsvReader()
 
 }
 
-QVector<SensorData> CsvReader::read(QString filename)
+void CsvReader::read(QString filename, QVector<SensorData>& data)
 {
-    QVector<SensorData> sensordatas;
     QFile rawDataFile(filename);
     QTextStream rawData(&rawDataFile);
 
@@ -28,14 +27,12 @@ QVector<SensorData> CsvReader::read(QString filename)
         lineId++;
         //check for complete dataset
         //if(gpsChecksum(line))
-            sensordatas.append(writeToSensorData(lineId, line));
+            data.append(writeToSensorData(lineId, line));
        }
      }
 
     rawDataFile.flush();
     rawDataFile.close();
-
-    return sensordatas;
 }
 
 SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)

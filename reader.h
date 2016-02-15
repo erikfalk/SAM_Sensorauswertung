@@ -16,7 +16,7 @@ public:
 
      Reader();
     ~Reader();
-    virtual QVector<SensorData> read(QString filename) = 0;
+    virtual void read(QString filename, QVector<SensorData>& data) = 0;
 
 };
 

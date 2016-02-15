@@ -25,7 +25,7 @@ protected:
 
 public:
     CzmlReader();
-    virtual QVector<SensorData> read(QString filename);
+    virtual void read(QString filename, QVector<SensorData>& data);
 
 };
 

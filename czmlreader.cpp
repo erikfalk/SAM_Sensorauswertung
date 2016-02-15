@@ -5,10 +5,8 @@ CzmlReader::CzmlReader()
 
 }
 
-QVector<SensorData> CzmlReader::read(QString filename)
+void CzmlReader::read(QString filename, QVector<SensorData>& data)
 {
-    QVector<SensorData> sensordatas;
-
     //file opening
     QFile czmlFile;
     QString czmlString;
@@ -16,7 +14,6 @@ QVector<SensorData> CzmlReader::read(QString filename)
     if(!czmlFile.open(QIODevice::ReadOnly | QIODevice::Text)){
         //QMessageBox::warning(this, "Warning!", "Can´t read file!");
         qDebug() << "could not open file for writing";
-        return sensordatas;
     }
     czmlString = czmlFile.readAll();
     czmlFile.close();
@@ -27,10 +24,8 @@ QVector<SensorData> CzmlReader::read(QString filename)
 
     for(int i = 1; i < czmlArray.size(); i++){
         QJsonObject czmlObject = czmlArray.at(i).toObject();
-        sensordatas.append(writeToSensorData(czmlObject));
+        data.append(writeToSensorData(czmlObject));
     }
-
-    return sensordatas;
 }
 
 SensorData CzmlReader::writeToSensorData(QJsonObject& data)

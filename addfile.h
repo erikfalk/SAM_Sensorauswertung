@@ -4,7 +4,16 @@
 #include <QDialog>
 #include <QDir>
 #include <QString>
+#include <QMessageBox>
 
+#include "ui_addfile.h"
+#include "QStandardPaths"
+#include "mainwindow.h"
+#include "filebrowser.h"
+
+#include "csvreader.h"
+#include "cleaner.h"
+#include "czmlreader.h"
 #include "czmlconverter.h"
 
 namespace Ui {
