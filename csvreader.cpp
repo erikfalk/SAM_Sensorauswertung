@@ -106,7 +106,6 @@ SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
         sensorDataTemp.setSensorValue(splittedData[14].toDouble());
     }
 
-    //extract latest date and time
 
     return sensorDataTemp;
 }
