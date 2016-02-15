@@ -1,8 +1,10 @@
 #ifndef READER_H
 #define READER_H
+
 #include <QString>
 #include <QVector>
 #include <QObject>
+
 #include "sensordata.h"
 
 class Reader
