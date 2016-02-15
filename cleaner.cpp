@@ -31,9 +31,6 @@ void Cleaner::grubbsTest(QVector<SensorData>& data)
             heightDif = qFabs(data[i+1].getHeight() - data[i].getHeight());
             millisecsToPoint = data[i].getDateTime().msecsTo(data[i+1].getDateTime());
 
-            if(data[i].getId()<100)
-                qDebug() << "Line ID: " << data[i].getId() << " Position: " << data[i].getPosition();
-
             //change duration in seconds
             timeToPoint = millisecsToPoint / 1000.0;
 

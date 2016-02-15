@@ -30,13 +30,44 @@ void CesiumWebView::dropEvent(QDropEvent *event){
 void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
 {
 
-    QCustomPlot *plot = this->parentWidget()->findChild<QCustomPlot *>("chartWidget");
     QVector<QString> valuePosition;
     QVector<double> sensorValue, ticks;
 
+    QCustomPlot *plot = this->parentWidget()->findChild<QCustomPlot *>("chartWidget");
+
     QCPBars *sensorValueBars = new QCPBars(plot->xAxis, plot->yAxis);
     sensorValueBars->setSelectable(true);
+    plot->clearPlottables();
     plot->addPlottable(sensorValueBars);
+
+    //prepare x-axis
+    for(int i = 0; i < data.count(); i++){
+        if(data[i].getSensorValue() != std::numeric_limits<double>::min()){
+            valuePosition << QString::number(data.at(i).getId());
+        }
+        ticks << i;
+
+    }
+
+    //prepare y-axis
+    for(int i = 0; i < data.count(); i++){
+        if(data[i].getSensorValue() != std::numeric_limits<double>::min())
+            sensorValue << data[i].getSensorValue();
+
+    }
+
+    plot->xAxis->setAutoTicks(false);
+    plot->xAxis->setAutoTickLabels(false);
+    plot->xAxis->setAutoTickStep(false);
+    plot->xAxis->setTickVector(ticks);
+    plot->xAxis->setTickVectorLabels(valuePosition);
+    plot->xAxis->setTickStep(data.count());
+    plot->xAxis->setTickLabelRotation(60);
+    plot->xAxis->setSubTickCount(0);
+    plot->xAxis->setTickLength(0, 4);
+    plot->xAxis->grid()->setVisible(false);
+    plot->xAxis->setRange(0, data.count());
+
 
     QPen pen;
     pen.setWidthF(1.2);
@@ -44,25 +75,6 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     sensorValueBars->setPen(pen);
     sensorValueBars->setBrush(QColor(255, 131, 0, 50));
 
-    //prepare x-axis
-    for(int i = 0; i < data.count(); i++){
-       ticks << i;
-       valuePosition << QString::number(data.at(i).getId());
-    }
-    plot->xAxis->setAutoTicks(false);
-    plot->xAxis->setAutoTickLabels(false);
-    plot->xAxis->setTickVector(ticks);
-    plot->xAxis->setTickVectorLabels(valuePosition);
-    plot->xAxis->setTickLabelRotation(60);
-    plot->xAxis->setSubTickCount(0);
-    plot->xAxis->setTickLength(0, 4);
-    plot->xAxis->grid()->setVisible(false);
-    plot->xAxis->setRange(0, data.count());
-
-    //prepare y-axis
-    for(int i = 0; i < data.count(); i++){
-        sensorValue << data[i].getSensorValue();
-    }
     QPen gridPen;
     gridPen.setStyle(Qt::SolidLine);
     gridPen.setColor(QColor(0, 0, 0, 25));
@@ -74,8 +86,11 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     converter.findExtrema(data);
     plot->yAxis->setRange(converter.getMinSensorValue(), converter.getMaxSensorValue());
     sensorValueBars->setData(ticks, sensorValue);
+    qDebug() << ticks << " " << sensorValue;
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     plot->replot();
+
+
 }
 
 

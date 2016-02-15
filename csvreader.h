@@ -28,6 +28,7 @@ protected:
 public:
 
     CsvReader();
+    ~CsvReader();
     void read(QString filename, QVector<SensorData>& data);
 
 };

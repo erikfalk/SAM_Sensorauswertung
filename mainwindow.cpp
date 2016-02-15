@@ -16,25 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //test.readCzml("/Users/erik-falk/Desktop/SAM_Testdaten.czml");
-
-    /*
-    QWebEngineSettings *settings = ui->cesiumView->settings();
-
-    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
-    settings->setAttribute(QWebEngineSettings::SpatialNavigationEnabled, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
-    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
-    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
-    settings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
-    settings->setAttribute(QWebEngineSettings::ErrorPageEnabled, true);
-    settings->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, true);
-    settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-    ui->cesiumView->setMouseTracking(true);
-    */
-
-    ui->cesiumView->setAcceptDrops(true);
+        ui->cesiumView->setAcceptDrops(true);
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
 
     //get data directory
@@ -51,20 +33,15 @@ MainWindow::MainWindow(QWidget *parent) :
     if(!_filePath.exists())
         _filePath.mkdir(appdir);
 
-
-
     filemodel = new QFileSystemModel(this);
-
     filemodel->setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
     filemodel->setNameFilters(QStringList() << "*.czml");
     filemodel->setNameFilterDisables(true);
-
 
     ui->treeView->setModel(filemodel);
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
-    qDebug() << appdir;
     ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
@@ -94,7 +71,7 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
            if(plottable)
         {
             double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
-            double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
+            //double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
 
             QCPBars *bar = qobject_cast<QCPBars*>(plottable);
 
@@ -149,7 +126,15 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
                        arg(value).
                        arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),                    
                        ui->chartWidget, ui->chartWidget->rect());
-                       showLocationOnMap(_loadedSensorData.at(key).getPosition());
+                       int yValue = QString(ui->chartWidget->xAxis->tickVectorLabels().at(key)).toInt();
+                       qDebug() << "yValue: " << yValue;
+
+                       for(int i = 0; i < _loadedSensorData.count(); i++){
+                           if(_loadedSensorData.at(i).getId() == yValue)
+                               showLocationOnMap(_loadedSensorData.at(i).getPosition());
+                       }
+
+
 
             }
          }
@@ -158,12 +143,10 @@ void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *ev
 
 void MainWindow::showLocationOnMap(QGeoCoordinate location) {
 
-
+    ui->cesiumView->setFocus();
     QWebElement webelement;
     QWebFrame* frame = ui->cesiumView->page()->currentFrame();
 
-    qDebug() << QString::number(location.longitude()) + ","
-                + QString::number(location.latitude());
     webelement = frame->findFirstElement("input[type=search]");
     do {
         webelement.setFocus();
@@ -173,7 +156,7 @@ void MainWindow::showLocationOnMap(QGeoCoordinate location) {
     webelement.setAttribute("value", QString::number(location.longitude()) + ","
                             + QString::number(location.latitude()));
 
-    ui->cesiumView->setFocus();
+
 
     QKeyEvent *press = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
     qApp->postEvent(ui->cesiumView, press);

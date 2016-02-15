@@ -63,8 +63,9 @@ void AddFile::on_buttonBox_accepted()
 
     if(!sensordata.empty()){
         cleaner.grubbsTest(sensordata);
-
         czmlConverter.convertToFile(_filePath, sensordata);
+        QMessageBox::information(this, "Info", "Converting sucessful!");
+
     } else {
         QMessageBox::warning(this, "Warning", ui->source_TextEdit->toPlainText() + "\n is an empty File" );
     }

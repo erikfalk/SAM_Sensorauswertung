@@ -35,7 +35,14 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
 
 
         czmlData << ",\n{\n \"id\": \"Monitoring point: " << data[i].getId() << "\",\n"
-                    " \"description\": \"Position: " << data[i].getPosition().toString(QGeoCoordinate::DegreesWithHemisphere) << " \",\n"
+                   " \"description\": \"Position:    " << data[i].getPosition().toString(QGeoCoordinate::DegreesWithHemisphere) << "<br>";
+
+        if(data[i].getSensorValue() != std::numeric_limits<double>::min())
+            czmlData <<                    "Sensorvalue: " << data[i].getSensorValue() << "<br>";
+        else
+            czmlData <<                    "Sensorvalue: n/a <br>";
+
+        czmlData <<                    "ISO Date:    " << data[i].getDateTime().toString(Qt::ISODate) << "\",\n"
                     " \"availability\": \"" << data[i].getDateTime().toString(Qt::ISODate) << "Z/"
                                            << _latestDateTime.toString(Qt::ISODate) << "Z\",\n"
                     " \"point\":{\n"
@@ -57,8 +64,10 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
                                              << data[i].getPosition().latitude() << ", " <<  data[i].getHeight() << "]\n"
                     " },\n";
 
-
-        czmlData << " \"sensorvalue\": " << data[i].getSensorValue() << "\n}";
+        if(data[i].getSensorValue() != std::numeric_limits<double>::min())
+            czmlData << " \"sensorvalue\": " << data[i].getSensorValue() << "\n}";
+        else
+            czmlData << " \"sensorvalue\": \"n/a\" ""\n}";
     }
 
     //end

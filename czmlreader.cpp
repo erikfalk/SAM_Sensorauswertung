@@ -45,7 +45,10 @@ SensorData CzmlReader::writeToSensorData(QJsonObject& data)
     sensordata.setPosition(parsedPosition);
     sensordata.setHeight(positionArray[2].toDouble());
 
-    sensordata.setSensorValue(data["sensorvalue"].toDouble());
+    if(data["sensorvalue"].isString())
+        sensordata.setSensorValue(std::numeric_limits<double>::min());
+    else
+        sensordata.setSensorValue(data["sensorvalue"].toDouble());
 
     return sensordata;
 }
