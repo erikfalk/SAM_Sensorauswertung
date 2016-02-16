@@ -22,6 +22,7 @@ public:
 
 private slots:
     void on_btn_addFile_pressed();
+    void plotDblMousePress(QCPAbstractPlottable*, QMouseEvent *event);
     void plotMousePress(QCPAbstractPlottable*, QMouseEvent *event);
     void onSensorDataRecieved(QVector<SensorData> &data);
 

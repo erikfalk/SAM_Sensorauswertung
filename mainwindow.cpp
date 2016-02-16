@@ -1,9 +1,9 @@
 #include <QtWidgets>
 #include <QWebView>
-#include <QDebug>
 #include <QUrl>
 #include <QWebElement>
 #include <QWebFrame>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-        ui->cesiumView->setAcceptDrops(true);
+    ui->cesiumView->setAcceptDrops(true);
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
 
     //get data directory
@@ -45,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setRootIndex(filemodel->setRootPath(appdir));
     ui->treeView->setAutoScroll(true);
 
-    connect(ui->chartWidget, &QCustomPlot::plottableDoubleClick, this, &MainWindow::plotMousePress);
+    connect(ui->chartWidget, &QCustomPlot::plottableDoubleClick, this, &MainWindow::plotDblMousePress);
+    connect(ui->chartWidget, &QCustomPlot::plottableClick, this, &MainWindow::plotMousePress);
     connect(ui->cesiumView, &CesiumWebView::sendSensorData, this, &MainWindow::onSensorDataRecieved);
-
 }
 
 MainWindow::~MainWindow()
@@ -63,82 +63,110 @@ void MainWindow::on_btn_addFile_pressed()
  addfile.exec();
 }
 
-
-
-void MainWindow::plotMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event) {
+void MainWindow::plotMousePress(QCPAbstractPlottable *plottable, QMouseEvent *event) {
 
     if(event->button() == Qt::LeftButton) {
-           if(plottable)
-        {
-            double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
-            //double y = ui->chartWidget->yAxis->pixelToCoord(event->pos().y());
+       if(plottable) {
 
-            QCPBars *bar = qobject_cast<QCPBars*>(plottable);
+           double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
+           QCPBars *bar = qobject_cast<QCPBars*>(plottable);
 
-            int key = 0;
-            double value = 0;
+           int key = 0;
+           double value = 0;
 
-            bool ok = false;
-            double m = std::numeric_limits<double>::max();
+           bool ok = false;
+           double m = std::numeric_limits<double>::max();
 
-            foreach(QCPBarData data, bar->data()->values())
-                {
-                    double d = qAbs(x - data.key);
+           foreach(QCPBarData data, bar->data()->values()) {
 
-                    if(d < m)
-                    {
+              double d = qAbs(x - data.key);
 
-                        key = data.key;
-                        value = data.value;
+              if(d < m) {
 
-                        ok = true;
-                        m = d;
-                    }
-                }
+                key = data.key;
+                value = data.value;
 
-            if(ok)
-            {
-               for(QCPBars *below = bar->barBelow();
-                  ((below != NULL) && below->data()->contains(key));
-                    below = below->barBelow())
-                    {
-                        value += below->data()->value(key).value;
-                    }
-
-                    QToolTip::hideText();
-                    QToolTip::showText(event->globalPos(),
-                    tr("<table>"
-                         "<tr>"
-                           "<th colspan=\"2\">%L1</th>"
-                         "</tr>"
-                         "<tr>"
-                           "<td>Bar Nr:</td>" "<td>%L2</td>"
-                         "</tr>"
-                         "<tr>"
-                           "<td>Val:</td>" "<td>%L3</td>"
-                         "</tr>"
-                         "<tr>"
-                            "<td>x-Axis Val:</td>" "<td>%L4</td>"
-                         "</tr>"
-                       "</table>").
-                       arg(bar->name().isEmpty() ? "..." : bar->name()).
-                       arg(key).
-                       arg(value).
-                       arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)),                    
-                       ui->chartWidget, ui->chartWidget->rect());
-                       int yValue = QString(ui->chartWidget->xAxis->tickVectorLabels().at(key)).toInt();
-                       qDebug() << "yValue: " << yValue;
-
-                       for(int i = 0; i < _loadedSensorData.count(); i++){
-                           if(_loadedSensorData.at(i).getId() == yValue)
-                               showLocationOnMap(_loadedSensorData.at(i).getPosition());
-                       }
-
-
-
+                ok = true;
+                m = d;
+              }
             }
-         }
+
+            if(ok) {
+
+              for(QCPBars *below = bar->barBelow();
+                 ((below != NULL) && below->data()->contains(key));
+                 below = below->barBelow()) {
+
+                    value += below->data()->value(key).value;
+              }
+
+              QToolTip::hideText();
+              QToolTip::showText(event->globalPos(),
+               tr("<table>"
+                    "<tr>"
+                     "<th colspan=\"2\">Id: %L1</th>"
+                    "</tr>"
+                    "<tr>"
+                     "<td>Sensorvalue:</td>" "<td>%L2</td>"
+                    "</tr>"
+                   "</table>").
+
+                 arg(ui->chartWidget->xAxis->tickVectorLabels().at(key)).
+                 arg(value),
+                     ui->chartWidget, ui->chartWidget->rect());
+            }
+      }
     }
+}
+
+
+void MainWindow::plotDblMousePress(QCPAbstractPlottable* plottable, QMouseEvent *event) {
+
+    if(event->button() == Qt::LeftButton) {
+       if(plottable) {
+
+           double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());
+           QCPBars *bar = qobject_cast<QCPBars*>(plottable);
+
+           int key = 0;
+           double value = 0;
+
+           bool ok = false;
+           double m = std::numeric_limits<double>::max();
+
+           foreach(QCPBarData data, bar->data()->values()) {
+
+              double d = qAbs(x - data.key);
+
+              if(d < m) {
+
+                key = data.key;
+                value = data.value;
+
+                ok = true;
+                m = d;
+              }
+            }
+
+            if(ok) {
+
+              for(QCPBars *below = bar->barBelow();
+                 ((below != NULL) && below->data()->contains(key));
+                 below = below->barBelow()) {
+
+                    value += below->data()->value(key).value;
+              }
+
+              double id = ui->chartWidget->xAxis->tickVectorLabels().at(key).toDouble();
+              for(int i = 0; i < _loadedSensorData.count(); i++) {
+                   if(id == _loadedSensorData.at(i).getId()) {
+                       showLocationOnMap(_loadedSensorData.at(i).getPosition());
+                       break;
+                   }
+             }
+          }
+    }
+  }
 }
 
 void MainWindow::showLocationOnMap(QGeoCoordinate location) {
@@ -148,29 +176,19 @@ void MainWindow::showLocationOnMap(QGeoCoordinate location) {
     QWebFrame* frame = ui->cesiumView->page()->currentFrame();
 
     webelement = frame->findFirstElement("input[type=search]");
-    do {
-        webelement.setFocus();
-    }
-    while(!webelement.hasFocus());
-
+    webelement.setFocus();
     webelement.setAttribute("value", QString::number(location.longitude()) + ","
                             + QString::number(location.latitude()));
 
-
-
-    QKeyEvent *press = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
-    qApp->postEvent(ui->cesiumView, press);
-
-    QKeyEvent *press2 = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_Enter, Qt::NoModifier);
-    qApp->postEvent(ui->cesiumView, press2);
-
-    QKeyEvent *press3 = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
-    qApp->postEvent(ui->cesiumView, press3);
-
+    QKeyEvent *press[10];
+    for(int i = 0; i < 10; i++){
+        press[i] = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+        qApp->postEvent(ui->cesiumView, press[i]);
+    }
 }
 
 
-void MainWindow::onSensorDataRecieved(QVector<SensorData> &data){
+void MainWindow::onSensorDataRecieved(QVector<SensorData> &data) {
     if(!_loadedSensorData.isEmpty())
        _loadedSensorData.clear();
 

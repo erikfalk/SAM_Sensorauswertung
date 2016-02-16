@@ -86,11 +86,8 @@ void CesiumWebView::drawDataToChart(QVector<SensorData> &data)
     converter.findExtrema(data);
     plot->yAxis->setRange(converter.getMinSensorValue(), converter.getMaxSensorValue());
     sensorValueBars->setData(ticks, sensorValue);
-    qDebug() << ticks << " " << sensorValue;
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     plot->replot();
-
-
 }
 
 
