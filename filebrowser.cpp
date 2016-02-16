@@ -1,6 +1,5 @@
 #include <QDir>
 #include <QStringList>
-#include <QDebug>
 
 #include "filebrowser.h"
 #include "ui_filebrowser.h"

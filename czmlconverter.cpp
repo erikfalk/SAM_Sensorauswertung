@@ -8,11 +8,17 @@ CzmlConverter::CzmlConverter() : _minSensorValue(std::numeric_limits<double>::ma
 
 int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
 {
-
-
     QDateTime time;
-    QString fileName = time.currentDateTime().toString("ss_ddMMyyyy") + ".czml";
-    QFile czmlFile(filePath.absolutePath() + "/" + fileName);
+    QFile czmlFile;
+
+    int i = 1;
+    do {
+
+        QString fileName = time.currentDateTime().toString("ddMMyyyy") + "_" + QString::number(i) +".czml";
+        czmlFile.setFileName(filePath.absolutePath() + "/" + fileName);
+        i++;
+    }
+    while(czmlFile.exists());
 
     //open file for writing
     if(!czmlFile.open(QFile::WriteOnly | QFile::Text)){
@@ -79,21 +85,6 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
     return 0;
 }
 
-double CzmlConverter::getMinSensorValue() const
-{
-    return _minSensorValue;
-}
-
-double CzmlConverter::getMaxSensorValue() const
-{
-    return _maxSensorValue;
-}
-
-QDateTime CzmlConverter::getLatestDateTime() const
-{
-    return _latestDateTime;
-}
-
 void CzmlConverter::findExtrema(const QVector<SensorData> &data)
 {
     QDateTime latestDateTime = data.at(0).getDateTime();
@@ -126,6 +117,26 @@ QColor CzmlConverter::mapValueToColor(double sensorValue)
     }
     return color.toRgb();
 }
+
+
+double CzmlConverter::getMinSensorValue() const
+{
+    return _minSensorValue;
+}
+
+double CzmlConverter::getMaxSensorValue() const
+{
+    return _maxSensorValue;
+}
+
+QDateTime CzmlConverter::getLatestDateTime() const
+{
+    return _latestDateTime;
+}
+
+
+
+
 
 
 

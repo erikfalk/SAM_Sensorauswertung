@@ -19,38 +19,36 @@ SOURCES +=  main.cpp\
             addfile.cpp \
             filebrowser.cpp \
             qcustomplot.cpp \
-    cesiumwebview.cpp \
-    sensordata.cpp \
-    gpschecksum.cpp \
-    specialfunctions.cpp \
-    alglibinternal.cpp \
-    ap.cpp \
-    reader.cpp \
-    csvreader.cpp \
-    cleaner.cpp \
-    grubbsdata.cpp \
-    czmlreader.cpp \
-    czmlconverter.cpp
+            cesiumwebview.cpp \
+            sensordata.cpp \
+            gpschecksum.cpp \
+            specialfunctions.cpp \
+            alglibinternal.cpp \
+            ap.cpp \
+            reader.cpp \
+            csvreader.cpp \
+            cleaner.cpp \
+            grubbsdata.cpp \
+            czmlreader.cpp \
+            czmlconverter.cpp
 
 HEADERS  += mainwindow.h \
             converter.h \
             addfile.h \
             filebrowser.h \
             qcustomplot.h \
-    sensordata.h \
-    specialfunctions.h \
-    stdafx.h \
-    alglibinternal.h \
-    ap.h \
-    reader.h \
-    csvreader.h \
-    cleaner.h \
-    grubbsdata.h \
-    czmlreader.h \
-    czmlconverter.h \
-    cesiumwebview.h
-
-    gpschecksum.h
+            sensordata.h \
+            specialfunctions.h \
+            stdafx.h \
+            alglibinternal.h \
+            ap.h \
+            reader.h \
+            csvreader.h \
+            cleaner.h \
+            grubbsdata.h \
+            czmlreader.h \
+            czmlconverter.h \
+            cesiumwebview.h
 
 FORMS    += mainwindow.ui \
             addfile.ui \
