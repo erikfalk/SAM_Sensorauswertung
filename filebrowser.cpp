@@ -33,10 +33,15 @@ void Filebrowser::on_buttonBox_accepted()
     if(ui->treeView->selectionModel()->selectedIndexes().count() != 0){
         //get filepath of the selected file
         QString path = filemodel->fileInfo(ui->treeView->currentIndex()).absoluteFilePath();
-        emit this->FileSelected(path);
+        if(path.endsWith(".csv")) {
+            emit this->FileSelected(path);
+            this->close();
+        }
+        else {
+            QFileInfo fi(path);
+            QMessageBox::warning(this, "Warning", fi.fileName() + "\nis not a CSV File!");
+        }
     }
-
-    this->close();
 }
 
 void Filebrowser::onSetHint(QString &hint, QString &filepath)

@@ -43,6 +43,8 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
         czmlData << ",\n{\n \"id\": \"Monitoring point: " << data[i].getId() << "\",\n"
                    " \"description\": \"Position:    " << data[i].getPosition().toString(QGeoCoordinate::DegreesWithHemisphere) << "<br>";
 
+        czmlData << "Height: " << data[i].getHeight() << "<br>";
+
         if(data[i].getSensorValue() != std::numeric_limits<double>::min())
             czmlData <<                    "Sensorvalue: " << data[i].getSensorValue() << "<br>";
         else

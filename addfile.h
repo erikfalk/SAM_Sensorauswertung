@@ -28,7 +28,6 @@ public:
     explicit AddFile(QDir filePath, QWidget *parent = 0);
     ~AddFile();
 
-
 private slots:
 
     void on_src_toolButton_pressed();
@@ -37,7 +36,6 @@ private slots:
     
 signals:
     void setHint(QString &hint, QString &filetype);
-    void fileConverted(Converter *convertedData);
 
 private:
     Ui::AddFile *ui;

@@ -16,7 +16,7 @@ class CsvReader : public Reader
 private:
 
     QDateTime _latestDateTime;
-    double _maxSensorValue, _minSensorValue, _maxVehicleSpeed;
+    double _maxSensorValue, _minSensorValue;
 
     bool gpsChecksum(QString &dataline);
 

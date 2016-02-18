@@ -21,7 +21,6 @@ SOURCES +=  main.cpp\
             qcustomplot.cpp \
             cesiumwebview.cpp \
             sensordata.cpp \
-            gpschecksum.cpp \
             specialfunctions.cpp \
             alglibinternal.cpp \
             ap.cpp \

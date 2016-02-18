@@ -64,7 +64,7 @@ void MainWindow::on_btn_addFile_pressed()
 
 void MainWindow::plotMousePress(QCPAbstractPlottable *plottable, QMouseEvent *event) {
 
-    if(event->button() == Qt::LeftButton) {
+    if(event->button() == Qt::RightButton) {
        if(plottable) {
 
            double x = ui->chartWidget->xAxis->pixelToCoord(event->pos().x());

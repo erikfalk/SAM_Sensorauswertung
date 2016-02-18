@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QWebView>
 #include <QDropEvent>
-#include <QDebug>
+#include <QMessageBox>
 #include <QMimeData>
 
 #include "czmlreader.h"

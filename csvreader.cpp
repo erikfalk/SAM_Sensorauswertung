@@ -11,7 +11,7 @@ void CsvReader::read(QString filename, QVector<SensorData>& data)
     QFile rawDataFile(filename);
     QTextStream rawData(&rawDataFile);
 
-    //open file for Reader
+    //try to open file for Reader
     if(!rawDataFile.open(QFile::ReadOnly | QFile::Text)){
         return;
     }
@@ -26,7 +26,7 @@ void CsvReader::read(QString filename, QVector<SensorData>& data)
         lineId++;
 
         //check for complete dataset
-        //if(gpsChecksum(line))
+        if(gpsChecksum(line))
             data.append(writeToSensorData(lineId, line));
        }
      }

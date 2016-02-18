@@ -14,8 +14,6 @@ AddFile::~AddFile()
     delete ui;
 }
 
-
-
 //filebrowser for csv file
 void AddFile::on_src_toolButton_pressed()
 {
@@ -40,15 +38,8 @@ void AddFile::on_src_toolButton_pressed()
 
 //check if file has correct ending and put path into textedit
 void AddFile::onSrc_FileSelected(const QString &path)
-{
-
-    if(path.endsWith(".csv")){
-        ui->source_TextEdit->setPlainText(path);
-    }
-    else{
-        QFileInfo fi(path);
-        QMessageBox::warning(this, "Warning", fi.fileName() + "\nis not a CSV File!");
-    }
+{  
+    ui->source_TextEdit->setPlainText(path);
 }
 
 
@@ -67,8 +58,7 @@ void AddFile::on_buttonBox_accepted()
         QMessageBox::information(this, "Info", "Converting sucessful!");
 
     } else {
-        QMessageBox::warning(this, "Warning", ui->source_TextEdit->toPlainText() + "\n is an empty File" );
+        QMessageBox::warning(this, "Warning", "Nothing to convert!" );
     }
-
 }
 

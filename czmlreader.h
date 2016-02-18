@@ -19,7 +19,6 @@ private:
     long getIdFromCzmlString(QString idString);
 
 protected:
-
     //convertes a line from the czml file into the data object
     virtual SensorData writeToSensorData (QJsonObject& data);
 

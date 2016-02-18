@@ -65,7 +65,7 @@
          </size>
         </property>
         <property name="plainText">
-         <string>/Users/erik-falk/Desktop/Testdata_short.csv</string>
+         <string/>
         </property>
        </widget>
       </item>
