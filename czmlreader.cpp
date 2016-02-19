@@ -12,9 +12,9 @@ void CzmlReader::read(QString filename, QVector<SensorData>& data)
     QString czmlString;
     czmlFile.setFileName(filename);
     if(!czmlFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        //QMessageBox::warning(this, "Warning!", "Can´t read file!");
-        qDebug() << "could not open file for writing";
+       return;
     }
+
     czmlString = czmlFile.readAll();
     czmlFile.close();
 

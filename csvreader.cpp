@@ -26,7 +26,7 @@ void CsvReader::read(QString filename, QVector<SensorData>& data)
         lineId++;
 
         //check for complete dataset
-        if(gpsChecksum(line))
+        //if(gpsChecksum(line))
             data.append(writeToSensorData(lineId, line));
        }
      }
@@ -109,16 +109,16 @@ SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
 
     sensorDataTemp.setPosition(position);
 
-    //extract time
-    QTime time;
-    if((splittedData.at(1)).count() > 6)
-         time = QTime::fromString(splittedData.at(1), "hhmmss.zzz");
-    else
-        time = QTime::fromString(splittedData.at(1), "hhmmss");
-
     //extract date
     QDate date = QDate::fromString(splittedData.at(9), "ddMMyy");
     date = date.addYears(100);
+
+    //extract time
+    QTime time;
+    if(splittedData.at(1).count() > 6)
+        time = QTime::fromString(splittedData.at(1), "hhmmss.z");
+     else
+        time = QTime::fromString(splittedData.at(1), "hhmmss");
 
     sensorDataTemp.setDateTime(QDateTime(date, time));
 
@@ -128,11 +128,15 @@ SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
 
     //check for and add extra data
     if(splittedData.count() > 13){
+
         //extract and set height
         sensorDataTemp.setHeight(splittedData[13].toDouble());
 
-        //extract sensor value
-        sensorDataTemp.setSensorValue(splittedData[14].toDouble());
+        if(!splittedData.at(14).isEmpty())
+            //extract sensor value
+            sensorDataTemp.setSensorValue(splittedData[14].toDouble());
+        else
+            sensorDataTemp.setSensorValue(std::numeric_limits<double>::min());
     }
 
     return sensorDataTemp;

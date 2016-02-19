@@ -1,20 +1,12 @@
-#include <QtWidgets>
-#include <QWebView>
-#include <QUrl>
-#include <QWebElement>
-#include <QWebFrame>
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "addfile.h"
-#include "cesiumwebview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    this->setWindowIcon(QIcon(":/pics/icon/SAM.png"));
     ui->cesiumView->setAcceptDrops(true);
     ui->cesiumView->load(QUrl("http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html"));
 

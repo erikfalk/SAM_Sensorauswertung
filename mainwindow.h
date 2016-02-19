@@ -3,10 +3,17 @@
 
 #include <QMainWindow>
 #include <QFileSystemModel>
+#include <QtWidgets>
+#include <QWebView>
+#include <QUrl>
+#include <QWebElement>
+#include <QWebFrame>
 
 #include "converter.h"
 #include "qcustomplot.h"
 #include "sensordata.h"
+#include "addfile.h"
+#include "cesiumwebview.h"
 
 namespace Ui {
 class MainWindow;

@@ -21,9 +21,7 @@ public:
 
     //creates a czml file from data stored in the vector
     virtual int convertToFile(QDir filePath, const QVector<SensorData>& data) = 0;
-
     virtual void findExtrema();
-
 };
 
 #endif // CONVERTER

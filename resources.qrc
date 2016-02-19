@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/pics/icon">
+        <file>SAM.png</file>
+        <file>SAM_Logo.ico</file>
+    </qresource>
+</RCC>

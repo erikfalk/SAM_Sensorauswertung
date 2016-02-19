@@ -53,3 +53,7 @@ FORMS    += mainwindow.ui \
             addfile.ui \
             filebrowser.ui
 
+RESOURCES += \
+    resources.qrc
+
+ICON = SAM_Logo.icns

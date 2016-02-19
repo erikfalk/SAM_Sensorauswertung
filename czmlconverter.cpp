@@ -22,12 +22,10 @@ int CzmlConverter::convertToFile(QDir filePath, const QVector<SensorData> &data)
 
     //open file for writing
     if(!czmlFile.open(QFile::WriteOnly | QFile::Text)){
-        qDebug() << "could not open file for writing";
         return -1;
     }
 
     findExtrema(data);
-    qDebug() << _latestDateTime;
 
     QTextStream czmlData(&czmlFile);
     //start
