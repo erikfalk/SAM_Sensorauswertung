@@ -57,3 +57,5 @@ RESOURCES += \
     resources.qrc
 
 ICON = SAM_Logo.icns
+
+QMAKE_CXXFLAGS_RELEASE += -Ofast

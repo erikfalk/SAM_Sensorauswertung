@@ -53,7 +53,7 @@ void AddFile::on_buttonBox_accepted()
     fileReader.read(ui->source_TextEdit->toPlainText(), sensordata);
 
     if(!sensordata.empty()){
-        //cleaner.grubbsTest(sensordata);
+        cleaner.grubbsTest(sensordata);
         czmlConverter.convertToFile(_filePath, sensordata);
         QMessageBox::information(this, "Info", "Converting sucessful!");
 

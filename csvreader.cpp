@@ -26,7 +26,7 @@ void CsvReader::read(QString filename, QVector<SensorData>& data)
         lineId++;
 
         //check for complete dataset
-        //if(gpsChecksum(line))
+        if(gpsChecksum(line))
             data.append(writeToSensorData(lineId, line));
        }
      }
@@ -130,11 +130,11 @@ SensorData CsvReader::writeToSensorData(long id, QString &rawDataString)
     if(splittedData.count() > 13){
 
         //extract and set height
-        sensorDataTemp.setHeight(splittedData[13].toDouble());
+        sensorDataTemp.setHeight(splittedData[12].toDouble());
 
-        if(!splittedData.at(14).isEmpty())
+        if(!splittedData.at(13).isEmpty())
             //extract sensor value
-            sensorDataTemp.setSensorValue(splittedData[14].toDouble());
+            sensorDataTemp.setSensorValue(splittedData[13].toDouble());
         else
             sensorDataTemp.setSensorValue(std::numeric_limits<double>::min());
     }
