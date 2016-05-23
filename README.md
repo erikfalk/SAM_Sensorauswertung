@@ -6,11 +6,11 @@ This Software does the following:<br>
 2. Store the data of each sentence (date, time, position, sensorvalue etc.) into a dataclass. <br>
 3. Scan trough the container with datas and check for outliers and remove them. <br>
 4. Convert data to the .czml format to use them in the cesium viewer (http://cesiumjs.org/Cesium/Build/Apps/CesiumViewer/index.html) <br>
-5. Show an GUI, in which the cesium viewer get called and .czml Files can be loaded by drag and drop. Positions and values will be shown as colored dots an the map. 
+5. Show a GUI, in which the cesium viewer webpage get called and a .czml file can be loaded by drag and drop. Positions and values will be shown as colored dots on the map. 
 Additional infos for the sensorvalues will be displayed trough a bar graph. <br><br>
 
 This software was developed by Rick Fastenrath and Erik Falk during winter semester 2015/2016 at FH Kiel (www.fh-kiel.de). <br> <br>
-Used tools: <br>
+Used tools and libs: <br>
 Qt 5.5 <br>
 CesiumViewer and the czml fileformat <br>
 QCustomPlot <br>
